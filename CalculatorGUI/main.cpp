@@ -1,10 +1,8 @@
-#include<windows.h>
 #include"function.h"
 #include"resource.h"
 
+CHAR str[256]{};
 HWND hEdit;
-CHAR s_text[256]{};
-double result{};
 
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -32,49 +30,34 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки от 1 до 9========================================
 			{
 		case IDC_ONE:
-			s_text[idx] = '1';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '1', str, idx);
 			break;
 		case IDC_TWO:
-			s_text[idx] = '2';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '2', str, idx);
 			break;
 		case IDC_TREE:
-			s_text[idx] = '3';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '3', str, idx);
 			break;
 		case IDC_FOUR:
-			s_text[idx] = '4';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '4', str, idx);
 			break;
 		case IDC_FIVE:
-			s_text[idx] = '5';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '5', str, idx);
 			break;
 		case IDC_SIX:
-			s_text[idx] = '6';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '6', str, idx);
 			break;
 		case IDC_SEVEN:
-			s_text[idx] = '7';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '7', str, idx);
 			break;
 		case IDC_EIGHT:
-			s_text[idx] = '8';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '8', str, idx);
 			break;
 		case IDC_NINE:
-			s_text[idx] = '9';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '9', str, idx);
+			break;
+		case IDC_ZERO:
+			setText(hEdit, '0', str, idx);
 			break;
 			}
 //=============================================================================
@@ -87,31 +70,29 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 				idx = 0;
 				break;
 			}
-			s_text[idx] = '\0';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
+			str[idx] = '\0';
+			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
 		case IDC_PLUS:
-			s_text[idx] = '+';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '+', str, idx);
 			break;
 		case IDC_MINUS:
-			s_text[idx] = '-';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '-', str, idx);
 			break;
 		case IDC_MUL:
-			s_text[idx] = '*';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '*', str, idx);
 			break;
 		case IDC_DIV:
-			s_text[idx] = '/';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(s_text));
-			++idx;
+			setText(hEdit, '/', str, idx);
 			break;
 		case IDC_EQ:
-			result = doColculations(s_text);
+			idx = doColculations(str);
+			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+			break;
+		case IDC_NULL:
+			idx = 0;
+			str[idx] = '\0';
+			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
 			}
 //=============================================================================

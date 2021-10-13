@@ -17,9 +17,10 @@ void devideDouble(FloatNumb& obj, double val)
 	obj.whole = static_cast<int>(val);
 
 	tmpVal = val - static_cast<float>(obj.whole);
-	double tmp = 0.1;
+	
 	if (tmpVal > 0)
 	{
+		double tmp = 0.1;
 		while (tmpVal < tmp)
 		{
 			++_exp;
@@ -92,7 +93,7 @@ void copy(char* input, int& i, int& lnumb, char* buftmp)
 {
 
 	i -= lnumb;
-	if (input[i - 1] == '-' && (input[i - 2] == '+' || input[i - 2] == '-' || input[i - 2] == '*' || input[i - 2] == '/' || input[i - 2] == '!'))
+	if (i > 0 && input[i - 1] == '-' && (input[i - 2] == '+' || input[i - 2] == '-' || input[i - 2] == '*' || input[i - 2] == '/' || (i - 1) == 0))
 		i--;
 
 	int j{};
@@ -110,14 +111,12 @@ void copy(char* input, int& i, int& lnumb, char* buftmp)
 //кол. символов лев. числа от ар. знака, кол. символов правого числа#
 void compressionArr(char* input, int& i, double result, int lnumb, int rnumb)
 {
-	int count{};
 	char buf[256]{};
-	if (input[i + (rnumb + 1)] == '!')
+	if (input[i + (rnumb + 1)] == '\0')
 	{
 		DoubleToChar(buf, result);
 		copy(input, i, lnumb, buf);
-		input[i] = '!';
-		input[i + 1] = '\0';
+		input[i] = '\0';
 		i--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
 	}
 	else
@@ -160,14 +159,14 @@ double charToDouble(char* input, int i, int numb)
 	int tmp{ i };
 
 	int isDegree{ 1 };
-	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '!' && input[i] != ',')
+	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',')
 	{
 		i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 		isDegree *= 10;
 		i--;
 	}
 
-	if (input[i] == ',')
+	if (input[i] == ',' && i >= 0)
 	{
 		isDegree = 1;
 		tmp = tmp - i;
@@ -197,8 +196,8 @@ double charToDouble(char* input, int i, int numb)
 	}
 
 	//Если число отрицательное делаем отрицательным
-	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '!'))
-		i_numb = i_numb - i_numb * 2;
+	if (i >= 0 && input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || (i-1) == 0))
+		i_numb = -i_numb;
 
 	return i_numb;
 }
@@ -210,33 +209,46 @@ int numbCount(char* input, int i, bool direction)
 {
 	int numb{};
 
-	//Если результат выражения отрицательное число
-	if (input[1] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/'))
+	//Если полученный результат выражения отрицательное число
+	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/'))
 	{
-		i++;
+		++i;
 	}
 
 	if (direction != true)
 	{
 		//Считаем количество символов до следующего знака
-		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && input[i - 1] != '!')
+		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && i != 0)
 		{
-			numb++;
-			i--;
+			++numb;
+			--i;
 		}
 	}
 	else
 	{
 		if (input[i + 1] == '-')//Если унарный минус
 		{
-			i++;				//Начинаем с него
-			numb++;				//И берём его в счёт(в левую сторону не надо)
+			++i;				//Начинаем с него
+			++numb;				//И берём его в счёт(в левую сторону не надо)
 		}
 
-		while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '!')
+//Если это результат выражения
+		if (i == 0)
 		{
-			numb++;
-			i++;
+			while (input[i] != '\0')
+			{
+				++numb;
+				++i;
+			}
+		}
+//Иначе
+		else
+		{
+			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '\0')
+			{
+				++numb;
+				++i;
+			}
 		}
 	}
 	return numb;
@@ -245,15 +257,15 @@ int numbCount(char* input, int i, bool direction)
 
 //#Вычесления значений вырожения# 
 //#Принимает: массив преобразованных данных в символы, размер массива#
-double doColculations(char* input)
+int doColculations(char* input)
 {
 	double result{};
 	double lNumb{}, rNumb{};
 	int lCount{}, rCount{};
-	int i{ 1 };
+	int i{};
 
 	//processing * and /
-	while (input[i] != '!')
+	while (input[i] != '\0')
 	{
 		if (input[i] == '*')
 		{
@@ -280,15 +292,13 @@ double doColculations(char* input)
 		i++;
 	}
 	//Pocessing + and -
-	i = 1;
-	while (input[i] != '!')
-	{
-		if (input[i] == '-' && input[i - 1] == '!')
-		{
-			i++;
-			continue;
-		}
+	if (input[0] == '-')
+		i = 1;
+	else
+		i = 0;
 
+	while (input[i] != '\0')
+	{
 		if (input[i] == '+')
 		{
 			lCount = numbCount(input, i, false);
@@ -314,11 +324,17 @@ double doColculations(char* input)
 	}
 
 	i = 0;
-	int numb{};
-	numb = numbCount(input, 0, true);
-	if (input[1] == '-')
-		i = 1;
+	while (input[i] != '\0')
+		++i;
 
-	result = charToDouble(input, numb + i, numb);
-	return result;
+	return i;
+}
+
+//Функция вывода символов в окно калькулятора
+void setText(HWND hEdit, char symb, char* str, int& idx)
+{
+	str[idx] = symb;
+	++idx;
+	str[idx] = '\0';
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 }

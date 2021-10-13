@@ -1,9 +1,10 @@
 #pragma once
+#include<windows.h>
 #include<algorithm>
+
 //Константы
 const int PRECESSION = 100000000;
-
-
+//Глобальные переменные
 
 //Структура для хранения вещественного числа в целочисленном предстовлении
 struct FloatNumb
@@ -15,4 +16,5 @@ struct FloatNumb
 	{}
 };
 
-double doColculations(char* input);
+int doColculations(char* input);
+void setText(HWND hEdit, char symb, char* str, int& idx);
