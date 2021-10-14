@@ -180,7 +180,7 @@ double charToDouble(char* input, int i, int numb)
 
 		isDegree = 1;
 		i_numb = 0;
-		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '!')
+		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0)
 		{
 			i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 			isDegree *= 10;
@@ -189,14 +189,14 @@ double charToDouble(char* input, int i, int numb)
 		f_numb += static_cast<float> (i_numb);
 
 		//Если число отрицательное делаем отрицательным
-		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '!'))
-			f_numb = f_numb - f_numb * 2;
+		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || i == 0))
+			f_numb = -f_numb;
 
 		return f_numb;
 	}
 
 	//Если число отрицательное делаем отрицательным
-	if (i >= 0 && input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || (i-1) == 0))
+	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || i == 0))
 		i_numb = -i_numb;
 
 	return i_numb;
@@ -333,8 +333,24 @@ int doColculations(char* input)
 //Функция вывода символов в окно калькулятора
 void setText(HWND hEdit, char symb, char* str, int& idx)
 {
+	idx = getText(hEdit, str);
 	str[idx] = symb;
 	++idx;
 	str[idx] = '\0';
 	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+}
+
+int getText(HWND hEdit,char* str)
+{
+	int idx{};
+	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)str);
+	return idx;
+}
+
+void doSignNumb(HWND hEdit, char* str)
+{
+	int idx{};
+	idx = getText(hEdit, str);
+
+
 }

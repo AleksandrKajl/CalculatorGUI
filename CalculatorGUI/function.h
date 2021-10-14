@@ -1,5 +1,6 @@
 #pragma once
 #include<windows.h>
+#include"resource.h"
 #include<algorithm>
 
 //Константы
@@ -18,3 +19,4 @@ struct FloatNumb
 
 int doColculations(char* input);
 void setText(HWND hEdit, char symb, char* str, int& idx);
+int getText(HWND hEdit, char* str);

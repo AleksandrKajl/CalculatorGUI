@@ -1,5 +1,5 @@
 #include"function.h"
-#include"resource.h"
+
 
 CHAR str[256]{};
 HWND hEdit;
@@ -85,7 +85,14 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 		case IDC_DIV:
 			setText(hEdit, '/', str, idx);
 			break;
+		case IDC_POINT:
+			setText(hEdit, ',', str, idx);
+			break;
+		case IDC_SIGN:
+
+			break;
 		case IDC_EQ:
+			getText(hEdit, str);
 			idx = doColculations(str);
 			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
