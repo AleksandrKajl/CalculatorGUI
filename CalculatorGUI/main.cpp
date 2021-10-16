@@ -89,7 +89,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			setText(hEdit, ',', str, idx);
 			break;
 		case IDC_SIGN:
-
+			doSignNumb(hEdit, str);
 			break;
 		case IDC_EQ:
 			getText(hEdit, str);

@@ -350,7 +350,38 @@ int getText(HWND hEdit,char* str)
 void doSignNumb(HWND hEdit, char* str)
 {
 	int idx{};
+	int count{};
 	idx = getText(hEdit, str);
+	int i{ idx - 1 };
+	while (str[i] != '-' && str[i] != '+' && str[i] != '*' && str[i] != '/' && i >= 0)
+	{
+		++count;
+		--i;
+	}
 
+	if (str[i] == '-' && (str[i - 1] == '+' || str[i - 1] == '-' || str[i - 1] == '*' || str[i - 1] == '/' || i == 0))
+		++count;
+//	count = numbCount(str, idx, false);
 
+	idx -= count;
+	char tmpBuf[64]{};
+	for (int i{}, j{ idx }; i < count; ++i, ++j)
+		tmpBuf[i] = str[j];
+
+	if (str[idx] == '-' && (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || idx == 0))
+	{
+//		--idx;
+		for (int i{1}; i < count; ++i, ++idx)
+			str[idx] = tmpBuf[i];
+	}
+	else
+	{
+		str[idx++] = '-';
+		for (int i{}; i < count; ++i, ++idx)
+			str[idx] = tmpBuf[i];
+	}
+
+	str[idx] = '\0';
+
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 }
