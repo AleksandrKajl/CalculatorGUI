@@ -30,34 +30,34 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки от 1 до 9========================================
 			{
 		case IDC_ONE:
-			setText(hEdit, '1', str, idx);
+			idx = setText(hEdit, '1', str);
 			break;
 		case IDC_TWO:
-			setText(hEdit, '2', str, idx);
+			idx = setText(hEdit, '2', str);
 			break;
 		case IDC_TREE:
-			setText(hEdit, '3', str, idx);
+			idx = setText(hEdit, '3', str);
 			break;
 		case IDC_FOUR:
-			setText(hEdit, '4', str, idx);
+			idx = setText(hEdit, '4', str);
 			break;
 		case IDC_FIVE:
-			setText(hEdit, '5', str, idx);
+			idx = setText(hEdit, '5', str);
 			break;
 		case IDC_SIX:
-			setText(hEdit, '6', str, idx);
+			idx = setText(hEdit, '6', str);
 			break;
 		case IDC_SEVEN:
-			setText(hEdit, '7', str, idx);
+			idx = setText(hEdit, '7', str);
 			break;
 		case IDC_EIGHT:
-			setText(hEdit, '8', str, idx);
+			idx = setText(hEdit, '8', str);
 			break;
 		case IDC_NINE:
-			setText(hEdit, '9', str, idx);
+			idx = setText(hEdit, '9', str);
 			break;
 		case IDC_ZERO:
-			setText(hEdit, '0', str, idx);
+			idx = setText(hEdit, '0', str);
 			break;
 			}
 //=============================================================================
@@ -74,19 +74,21 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
 		case IDC_PLUS:
-			setText(hEdit, '+', str, idx);
+			setSign(hEdit, '+', str, idx);
+		//	idx = setText(hEdit, '+', str);
 			break;
 		case IDC_MINUS:
-			setText(hEdit, '-', str, idx);
+			setSign(hEdit, '-', str, idx);
 			break;
 		case IDC_MUL:
-			setText(hEdit, '*', str, idx);
+			setSign(hEdit, '*', str, idx);
 			break;
 		case IDC_DIV:
-			setText(hEdit, '/', str, idx);
+			setSign(hEdit, '/', str, idx);
 			break;
 		case IDC_POINT:
-			setText(hEdit, ',', str, idx);
+			if (!checkPoint(str, idx))
+				setSign(hEdit, ',', str, idx);
 			break;
 		case IDC_SIGN:
 			doSignNumb(hEdit, str);

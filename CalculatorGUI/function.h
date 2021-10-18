@@ -17,7 +17,10 @@ struct FloatNumb
 	{}
 };
 
+//Прототипы
 int doColculations(char* input);
-void setText(HWND hEdit, char symb, char* str, int& idx);
+int setText(HWND hEdit, char symb, char* str);
 int getText(HWND hEdit, char* str);
 void doSignNumb(HWND hEdit, char* str);
+void setSign(HWND hEdit, char symb, char* str, int& idx);
+bool checkPoint(char* str, int idx);

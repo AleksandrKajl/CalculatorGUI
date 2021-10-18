@@ -330,58 +330,106 @@ int doColculations(char* input)
 	return i;
 }
 
-//Функция вывода символов в окно калькулятора
-void setText(HWND hEdit, char symb, char* str, int& idx)
+//#Функция вывода символов в окно калькулятора
+//#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
+//#Return: Количество введёных символов без \0
+int setText(HWND hEdit, char symb, char* str)
 {
+	int idx;
+//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
 	idx = getText(hEdit, str);
 	str[idx] = symb;
 	++idx;
 	str[idx] = '\0';
+//Отправляет сообщение окну, минуя очередь
 	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+	return idx;
 }
 
-int getText(HWND hEdit,char* str)
+//#Функция для получения символов из окна калькулятора
+//#Параметры: Дескриптор окна управления, символьный буфер
+//#Return: Количество полученных символов
+int getText(HWND hEdit, char* str)
 {
 	int idx{};
+//Отправляет сообщение окну, минуя очередь
 	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)str);
 	return idx;
 }
 
+
+//#Функция меняет знак у числа
+//#Параметры: Дескриптор окна управления, символьный буфер
 void doSignNumb(HWND hEdit, char* str)
 {
 	int idx{};
 	int count{};
+//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
 	idx = getText(hEdit, str);
+//Устанавлеваем на последний символ
 	int i{ idx - 1 };
+//считаем количество символов до первого арефм. знака или до нулевого индекса буфера
 	while (str[i] != '-' && str[i] != '+' && str[i] != '*' && str[i] != '/' && i >= 0)
 	{
 		++count;
 		--i;
 	}
-
+//Если стоял унарный минус
 	if (str[i] == '-' && (str[i - 1] == '+' || str[i - 1] == '-' || str[i - 1] == '*' || str[i - 1] == '/' || i == 0))
 		++count;
-//	count = numbCount(str, idx, false);
 
+//Проверяем если нет числа, знак не меняем
+	if (count == 0)
+		return;
+
+//Устанавлеваем индекс на место сразу после знака
 	idx -= count;
 	char tmpBuf[64]{};
+//Капируем число для которого меняем знак во временный буфер
 	for (int i{}, j{ idx }; i < count; ++i, ++j)
 		tmpBuf[i] = str[j];
 
+//Проверяем было ли число отрицательным
 	if (str[idx] == '-' && (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || idx == 0))
 	{
-//		--idx;
+//Если было затираем знак который был
 		for (int i{1}; i < count; ++i, ++idx)
 			str[idx] = tmpBuf[i];
 	}
 	else
 	{
+//Записываем знак, затем число
 		str[idx++] = '-';
 		for (int i{}; i < count; ++i, ++idx)
 			str[idx] = tmpBuf[i];
 	}
 
 	str[idx] = '\0';
-
+//Отправляет сообщение окну, минуя очередь
 	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+}
+
+//#Функция записи арифм. знаков в буфер
+void setSign(HWND hEdit,char symb, char* str, int& idx)
+{
+	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || idx == 0)
+		return;
+	//else if (str[idx - 1] == ',')
+	//{
+	//	str[idx - 1] = '\0';
+	//	idx = setText(hEdit, symb, str);
+	//}
+	else
+		idx = setText(hEdit, symb, str);
+}
+
+bool checkPoint(char* str, int idx)
+{
+	while (str[idx - 1] != '-' && str[idx - 1] != '+' && str[idx - 1] != '*' && str[idx - 1] != '/' && (idx - 1) != 0)
+	{
+		if (str[idx - 1] == ',')
+			return true;
+		--idx;
+	}
+	return false;
 }
