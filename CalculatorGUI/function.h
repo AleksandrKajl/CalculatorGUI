@@ -1,11 +1,11 @@
 #pragma once
 #include<windows.h>
-#include"resource.h"
 #include<algorithm>
+#include<cmath>
+#include"resource.h"
 
 //Константы
 const int PRECESSION = 100000000;
-//Глобальные переменные
 
 //Структура для хранения вещественного числа в целочисленном предстовлении
 struct FloatNumb
@@ -18,9 +18,12 @@ struct FloatNumb
 };
 
 //Прототипы
+BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 int doColculations(char* input);
 int setText(HWND hEdit, char symb, char* str);
 int getText(HWND hEdit, char* str);
 void doSignNumb(HWND hEdit, char* str);
 void setSign(HWND hEdit, char symb, char* str, int& idx);
 bool checkPoint(char* str, int idx);
+bool checkInput(char* str);
+void strCopy(char* str, char* mes);

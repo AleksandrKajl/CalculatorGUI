@@ -22,8 +22,9 @@
 #define IDC_ZERO                        1017
 #define IDC_POINT                       1018
 #define IDC_SIGN                        1019
-#define IDC_BACKSPACE2                  1020
 #define IDC_NULL                        1020
+#define IDC_DIV2                        1021
+#define IDC_EXP_2                       1021
 
 // Next default values for new objects
 // 

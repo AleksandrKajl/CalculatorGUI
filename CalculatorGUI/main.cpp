@@ -1,11 +1,9 @@
 #include"function.h"
 
-
-CHAR str[256]{};
-HWND hEdit;
-
-BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
-
+//Глобальные переменные
+static CHAR str[256]{};
+char mes[] = "Invalid input";
+static HWND hEdit;
 
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
@@ -61,7 +59,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 			}
 //=============================================================================
-//=====================Функциональные кнопки===================================
+//=====================Кнопки <--, +, -, /, *, =, ',', +/-, C================== 
 			{
 		case IDC_BACKSPACE:
 			--idx;
@@ -95,7 +93,10 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 		case IDC_EQ:
 			getText(hEdit, str);
-			idx = doColculations(str);
+			if (checkInput(str))
+				idx = doColculations(str);
+			else
+				strCopy(str, mes);
 			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
 		case IDC_NULL:
@@ -104,6 +105,11 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
 			break;
 			}
+//=============================================================================
+//=====================Кнопки x2===============================================
+		case IDC_EXP_2:
+
+			break;
 //=============================================================================
 		}
 		break;

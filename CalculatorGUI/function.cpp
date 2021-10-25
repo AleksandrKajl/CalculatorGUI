@@ -414,11 +414,6 @@ void setSign(HWND hEdit,char symb, char* str, int& idx)
 {
 	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || idx == 0)
 		return;
-	//else if (str[idx - 1] == ',')
-	//{
-	//	str[idx - 1] = '\0';
-	//	idx = setText(hEdit, symb, str);
-	//}
 	else
 		idx = setText(hEdit, symb, str);
 }
@@ -432,4 +427,89 @@ bool checkPoint(char* str, int idx)
 		--idx;
 	}
 	return false;
+}
+
+int len(char* str)
+{
+	int len{};
+	while (str[len] != '\0')
+		len++;
+	return len;
+}
+
+void strCopy(char* str, char* mes)
+{
+	int i{};
+	while (mes[i] != '\0')
+	{
+		str[i] = mes[i];
+		i++;
+	}
+	str[i] = '\0';
+}
+
+bool checkInput(char* str)
+{
+	int size{};
+	size = len(str);
+	int i{};
+	//Проверка на арифм. знак в начале
+	if (str[i] == '+' || str[i] == '*' || str[i] == '/' || str[i] == ',')
+	{
+		return false;
+	}
+
+	//Проверка точки перед числом
+	if (str[0] != '-')
+	{
+		if (str[0] == ',')
+			return false;
+	}
+	else
+	{
+		if (str[1] == ',')
+			return false;
+	}
+
+	int cnt{};
+	while (str[i] != '\0')
+	{
+
+		//Корректно если: число, арифм. знак или знак дес. дроби 
+		if ((str[i] >='0' && str[i] <= '9') || str[i] == '+' || str[i] == '-' ||
+			str[i] == '*' || str[i] == '/' || str[i] == ',')
+		{
+			// Проверка на два знака подряд
+			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+			{
+				//Проверяем точку в конце числа и перед числом
+				if (str[i - 1] == ',' || str[i + 1] == ',')
+					return false;
+				//Переменная кол. точек в числе обнуляется когда даходим до знака
+				cnt = 0;
+				if (str[i + 1] == '+' || (str[i + 1] == '-' && str[i + 2] == '-') || str[i + 1] == '*' || str[i + 1] == '/')
+				{
+					return false;
+				}
+			}
+
+			if (str[i] == ',')
+			{
+				if (++cnt > 1)
+					return false;
+			}
+
+			i++;
+		}
+		else
+			return false;
+	}
+
+	//Проверка на арифм. знак в конце
+	if (str[size - 1] == '+' || str[size - 1] == '-' || str[size - 1] == '*' || str[size - 1] == '/')
+	{
+		return false;
+	}
+
+	return true;
 }
