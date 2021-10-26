@@ -26,6 +26,7 @@
 #define IDC_DIV2                        1021
 #define IDC_EXP_2                       1021
 #define IDC_EXP                         1021
+#define IDC_EXP2                        1022
 
 // Next default values for new objects
 // 
