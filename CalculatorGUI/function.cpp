@@ -159,7 +159,7 @@ double charToDouble(char* input, int i, int numb)
 	int tmp{ i };
 
 	int isDegree{ 1 };
-	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',')
+	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',' && input[i] != '^')
 	{
 		i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 		isDegree *= 10;
@@ -180,7 +180,7 @@ double charToDouble(char* input, int i, int numb)
 
 		isDegree = 1;
 		i_numb = 0;
-		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0)
+		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != '^')
 		{
 			i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 			isDegree *= 10;
@@ -189,14 +189,14 @@ double charToDouble(char* input, int i, int numb)
 		f_numb += static_cast<float> (i_numb);
 
 		//Если число отрицательное делаем отрицательным
-		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || i == 0))
+		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i-1] == '^' || i == 0))
 			f_numb = -f_numb;
 
 		return f_numb;
 	}
 
 	//Если число отрицательное делаем отрицательным
-	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || i == 0))
+	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' || i == 0))
 		i_numb = -i_numb;
 
 	return i_numb;
@@ -210,7 +210,7 @@ int numbCount(char* input, int i, bool direction)
 	int numb{};
 
 	//Если полученный результат выражения отрицательное число
-	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/'))
+	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '^'))
 	{
 		++i;
 	}
@@ -218,7 +218,7 @@ int numbCount(char* input, int i, bool direction)
 	if (direction != true)
 	{
 		//Считаем количество символов до следующего знака
-		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && i != 0)
+		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && input[i - 1] != '^' && i != 0)
 		{
 			++numb;
 			--i;
@@ -244,7 +244,7 @@ int numbCount(char* input, int i, bool direction)
 //Иначе
 		else
 		{
-			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '\0')
+			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '^' && input[i + 1] != '\0')
 			{
 				++numb;
 				++i;
@@ -287,6 +287,17 @@ int doColculations(char* input)
 
 			result = lNumb / rNumb;
 			compressionArr(input, i, result, lCount, rCount);
+		}
+		else if (input[i] == '^')
+		{
+			lCount = numbCount(input, i, false);
+			lNumb = charToDouble(input, i - 1, lCount);
+			rCount = numbCount(input, i, true);
+			rNumb = charToDouble(input, i + rCount, rCount);
+
+			result = pow(lNumb,rNumb);
+			compressionArr(input, i, result, lCount, rCount);
+
 		}
 
 		i++;
@@ -412,7 +423,7 @@ void doSignNumb(HWND hEdit, char* str)
 //#Функция записи арифм. знаков в буфер
 void setSign(HWND hEdit,char symb, char* str, int& idx)
 {
-	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || idx == 0)
+	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || str[idx - 1] == '^' || idx == 0)
 		return;
 	else
 		idx = setText(hEdit, symb, str);
@@ -420,7 +431,7 @@ void setSign(HWND hEdit,char symb, char* str, int& idx)
 
 bool checkPoint(char* str, int idx)
 {
-	while (str[idx - 1] != '-' && str[idx - 1] != '+' && str[idx - 1] != '*' && str[idx - 1] != '/' && (idx - 1) != 0)
+	while (str[idx - 1] != '-' && str[idx - 1] != '+' && str[idx - 1] != '*' && str[idx - 1] != '/' && str[idx - 1] != '^' && (idx - 1) != 0)
 	{
 		if (str[idx - 1] == ',')
 			return true;
@@ -454,7 +465,7 @@ bool checkInput(char* str)
 	size = len(str);
 	int i{};
 	//Проверка на арифм. знак в начале
-	if (str[i] == '+' || str[i] == '*' || str[i] == '/' || str[i] == ',')
+	if (str[i] == '+' || str[i] == '*' || str[i] == '/' || str[i] == ',' || str[i] == '^')
 	{
 		return false;
 	}
@@ -477,17 +488,17 @@ bool checkInput(char* str)
 
 		//Корректно если: число, арифм. знак или знак дес. дроби 
 		if ((str[i] >='0' && str[i] <= '9') || str[i] == '+' || str[i] == '-' ||
-			str[i] == '*' || str[i] == '/' || str[i] == ',')
+			str[i] == '*' || str[i] == '/' || str[i] == ',' || str[i] == '^')
 		{
 			// Проверка на два знака подряд
-			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
+			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '^')
 			{
 				//Проверяем точку в конце числа и перед числом
 				if (str[i - 1] == ',' || str[i + 1] == ',')
 					return false;
 				//Переменная кол. точек в числе обнуляется когда даходим до знака
 				cnt = 0;
-				if (str[i + 1] == '+' || (str[i + 1] == '-' && str[i + 2] == '-') || str[i + 1] == '*' || str[i + 1] == '/')
+				if (str[i + 1] == '+' || (str[i + 1] == '-' && str[i + 2] == '-') || str[i + 1] == '*' || str[i + 1] == '/' || str[i + 1] == '^')
 				{
 					return false;
 				}
@@ -506,10 +517,8 @@ bool checkInput(char* str)
 	}
 
 	//Проверка на арифм. знак в конце
-	if (str[size - 1] == '+' || str[size - 1] == '-' || str[size - 1] == '*' || str[size - 1] == '/')
-	{
+	if (str[size - 1] == '+' || str[size - 1] == '-' || str[size - 1] == '*' || str[size - 1] == '/' || str[size - 1] == '^')
 		return false;
-	}
 
 	return true;
 }
