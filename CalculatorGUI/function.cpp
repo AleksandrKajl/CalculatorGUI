@@ -159,7 +159,7 @@ double charToDouble(char* input, int i, int numb)
 	int tmp{ i };
 
 	int isDegree{ 1 };
-	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',' && input[i] != '^')
+	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',' && input[i] != '^' && input[i] != 'V')
 	{
 		i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 		isDegree *= 10;
@@ -180,7 +180,7 @@ double charToDouble(char* input, int i, int numb)
 
 		isDegree = 1;
 		i_numb = 0;
-		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != '^')
+		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != '^' && input[i] != 'V')
 		{
 			i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 			isDegree *= 10;
@@ -233,7 +233,7 @@ int numbCount(char* input, int i, bool direction)
 		}
 
 //Если это результат выражения
-		if (i == 0)
+		if (i == 0 && input[i] != 'V')
 		{
 			while (input[i] != '\0')
 			{
@@ -264,41 +264,108 @@ int doColculations(char* input)
 	int lCount{}, rCount{};
 	int i{};
 
+	if (input[0] == 'V')
+	{
+		rCount = numbCount(input, i, true);
+		rNumb = charToDouble(input, i + rCount, rCount);
+
+		result = sqrt(rNumb);
+		compressionArr(input, i, result, lCount, rCount);
+	}
+
 	//processing * and /
 	while (input[i] != '\0')
 	{
-		if (input[i] == '*')
+		if ((input[i] == '*' || input[i] == '/' || input[i] == '^') && input[i+1] != 'V')
 		{
-			//Считаем количество символов слево и справо от знака
-			lCount = numbCount(input, i, false);
-			rCount = numbCount(input, i, true);
+			switch (input[i])
+			{
+			case('*'):
+				//Считаем количество символов слево и справо от знака
+				lCount = numbCount(input, i, false);
+				rCount = numbCount(input, i, true);
 
-			lNumb = charToDouble(input, i - 1, lCount);	//i указывает на символ перед знаком
-			rNumb = charToDouble(input, i + rCount, rCount);
-			result = lNumb * rNumb;
-			compressionArr(input, i, result, lCount, rCount);
+				lNumb = charToDouble(input, i - 1, lCount);	//i указывает на символ перед знаком
+				rNumb = charToDouble(input, i + rCount, rCount);
+				result = lNumb * rNumb;
+				compressionArr(input, i, result, lCount, rCount);
+				break;
+
+			case('/'):
+				lCount = numbCount(input, i, false);
+				lNumb = charToDouble(input, i - 1, lCount);
+				rCount = numbCount(input, i, true);
+				rNumb = charToDouble(input, i + rCount, rCount);
+
+				result = lNumb / rNumb;
+				compressionArr(input, i, result, lCount, rCount);
+				break;
+
+			case('^'):
+				lCount = numbCount(input, i, false);
+				lNumb = charToDouble(input, i - 1, lCount);
+				rCount = numbCount(input, i, true);
+				rNumb = charToDouble(input, i + rCount, rCount);
+
+				result = pow(lNumb, rNumb);
+				compressionArr(input, i, result, lCount, rCount);
+				break;
+			}
 		}
-		else if (input[i] == '/')
+		else if (input[i + 1] == 'V')
 		{
-			lCount = numbCount(input, i, false);
-			lNumb = charToDouble(input, i - 1, lCount);
+			int tmp = i;
+			i++;
+			//lCount = numbCount(input, i, false);
+			//lNumb = charToDouble(input, i - 1, lCount);
 			rCount = numbCount(input, i, true);
 			rNumb = charToDouble(input, i + rCount, rCount);
-
-			result = lNumb / rNumb;
+		
+			result = sqrt(rNumb);
 			compressionArr(input, i, result, lCount, rCount);
+			i = tmp - 1;
 		}
-		else if (input[i] == '^')
-		{
-			lCount = numbCount(input, i, false);
-			lNumb = charToDouble(input, i - 1, lCount);
-			rCount = numbCount(input, i, true);
-			rNumb = charToDouble(input, i + rCount, rCount);
+		//if (input[i] == '*')
+		//{
+		//	//Считаем количество символов слево и справо от знака
+		//	lCount = numbCount(input, i, false);
+		//	rCount = numbCount(input, i, true);
 
-			result = pow(lNumb,rNumb);
-			compressionArr(input, i, result, lCount, rCount);
+		//	lNumb = charToDouble(input, i - 1, lCount);	//i указывает на символ перед знаком
+		//	rNumb = charToDouble(input, i + rCount, rCount);
+		//	result = lNumb * rNumb;
+		//	compressionArr(input, i, result, lCount, rCount);
+		//}
+		//else if (input[i] == '/')
+		//{
+		//	lCount = numbCount(input, i, false);
+		//	lNumb = charToDouble(input, i - 1, lCount);
+		//	rCount = numbCount(input, i, true);
+		//	rNumb = charToDouble(input, i + rCount, rCount);
 
-		}
+		//	result = lNumb / rNumb;
+		//	compressionArr(input, i, result, lCount, rCount);
+		//}
+		//else if (input[i] == '^')
+		//{
+		//	lCount = numbCount(input, i, false);
+		//	lNumb = charToDouble(input, i - 1, lCount);
+		//	rCount = numbCount(input, i, true);
+		//	rNumb = charToDouble(input, i + rCount, rCount);
+
+		//	result = pow(lNumb,rNumb);
+		//	compressionArr(input, i, result, lCount, rCount);
+		//}
+		//else if (input[i] == 'V')
+		//{
+		//	lCount = numbCount(input, i, false);
+		//	lNumb = charToDouble(input, i - 1, lCount);
+		//	rCount = numbCount(input, i, true);
+		//	rNumb = charToDouble(input, i + rCount, rCount);
+
+		//	result = pow(lNumb, rNumb);
+		//	compressionArr(input, i, result, lCount, rCount);
+		//}
 
 		i++;
 	}
@@ -344,7 +411,7 @@ int doColculations(char* input)
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
 //#Return: Количество введёных символов без \0
-int setText(HWND hEdit, char symb, char* str)
+int setText(HWND hEdit,char symb, char* str)
 {
 	int idx;
 //Получаем символы из окна калькулятора в idx колиество считанных символов без \0
@@ -369,9 +436,9 @@ int getText(HWND hEdit, char* str)
 }
 
 
-//#Функция меняет знак у числа
-//#Параметры: Дескриптор окна управления, символьный буфер
-void doSignNumb(HWND hEdit, char* str)
+//#Функция устанавлевает унарный знак +/- или sqrt
+//#Параметры: Дескриптор окна управления, символьный буфер, унарный знак
+void doSignNumb(HWND hEdit, char* str, char sign)
 {
 	int idx{};
 	int count{};
@@ -380,14 +447,26 @@ void doSignNumb(HWND hEdit, char* str)
 //Устанавлеваем на последний символ
 	int i{ idx - 1 };
 //считаем количество символов до первого арефм. знака или до нулевого индекса буфера
-	while (str[i] != '-' && str[i] != '+' && str[i] != '*' && str[i] != '/' && i >= 0)
+	while (str[i] != '-' && str[i] != '+' && str[i] != '*' && str[i] != '/' && str[i] != '^' && str[i] != 'V' && i >= 0)
 	{
 		++count;
 		--i;
 	}
-//Если стоял унарный минус
-	if (str[i] == '-' && (str[i - 1] == '+' || str[i - 1] == '-' || str[i - 1] == '*' || str[i - 1] == '/' || i == 0))
-		++count;
+//Если ставим минус квадратному корню
+	if (str[i] == 'V' && sign == '-')
+		return;
+	else if (str[i] == '-' && sign == 'V')
+	{
+			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(mes));
+			return;
+	}
+
+//Если стоял унарный знак
+	if (str[i] == sign && (str[i - 1] == '+' || str[i - 1] == '-' || str[i - 1] == '*' || str[i - 1] == '/' || str[i - 1] == '^' || i == 0))
+	{
+			++count;
+	}
+		
 
 //Проверяем если нет числа, знак не меняем
 	if (count == 0)
@@ -395,13 +474,14 @@ void doSignNumb(HWND hEdit, char* str)
 
 //Устанавлеваем индекс на место сразу после знака
 	idx -= count;
-	char tmpBuf[64]{};
+	char tmpBuf[24]{};
 //Капируем число для которого меняем знак во временный буфер
 	for (int i{}, j{ idx }; i < count; ++i, ++j)
 		tmpBuf[i] = str[j];
 
 //Проверяем было ли число отрицательным
-	if (str[idx] == '-' && (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || idx == 0))
+	if (str[idx] == sign && (str[idx - 1] == '+' || str[idx - 1] == '-' ||
+		str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == '^' || idx == 0))
 	{
 //Если было затираем знак который был
 		for (int i{1}; i < count; ++i, ++idx)
@@ -410,7 +490,8 @@ void doSignNumb(HWND hEdit, char* str)
 	else
 	{
 //Записываем знак, затем число
-		str[idx++] = '-';
+
+		str[idx++] = sign;
 		for (int i{}; i < count; ++i, ++idx)
 			str[idx] = tmpBuf[i];
 	}
@@ -429,9 +510,10 @@ void setSign(HWND hEdit,char symb, char* str, int& idx)
 		idx = setText(hEdit, symb, str);
 }
 
+//#Функция проверяет число на установленную точку(запятую) 
 bool checkPoint(char* str, int idx)
 {
-	while (str[idx - 1] != '-' && str[idx - 1] != '+' && str[idx - 1] != '*' && str[idx - 1] != '/' && str[idx - 1] != '^' && (idx - 1) != 0)
+	while (str[idx - 1] != '-' && str[idx - 1] != '+' && str[idx - 1] != '*' && str[idx - 1] != '/' && str[idx - 1] != '^' && str[idx - 1] != 'V' && (idx - 1) != 0)
 	{
 		if (str[idx - 1] == ',')
 			return true;
@@ -471,7 +553,7 @@ bool checkInput(char* str)
 	}
 
 	//Проверка точки перед числом
-	if (str[0] != '-')
+	if (str[0] != '-' && str[0] != 'V')
 	{
 		if (str[0] == ',')
 			return false;
@@ -488,17 +570,19 @@ bool checkInput(char* str)
 
 		//Корректно если: число, арифм. знак или знак дес. дроби 
 		if ((str[i] >='0' && str[i] <= '9') || str[i] == '+' || str[i] == '-' ||
-			str[i] == '*' || str[i] == '/' || str[i] == ',' || str[i] == '^')
+			str[i] == '*' || str[i] == '/' || str[i] == ',' || str[i] == '^' || str[i] == 'V')
 		{
 			// Проверка на два знака подряд
-			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '^')
+			if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '^' || str[i] == 'V')
 			{
 				//Проверяем точку в конце числа и перед числом
 				if (str[i - 1] == ',' || str[i + 1] == ',')
 					return false;
 				//Переменная кол. точек в числе обнуляется когда даходим до знака
 				cnt = 0;
-				if (str[i + 1] == '+' || (str[i + 1] == '-' && str[i + 2] == '-') || str[i + 1] == '*' || str[i + 1] == '/' || str[i + 1] == '^')
+				//Второй арифм. знак
+				if (str[i + 1] == '+' || (str[i + 1] == '-' && str[i + 2] == '-') || str[i + 1] == '*' ||
+					str[i + 1] == '/' || str[i + 1] == '^' || (str[i + 1] == 'V' && str[i+2] == 'V'))
 				{
 					return false;
 				}
@@ -517,7 +601,7 @@ bool checkInput(char* str)
 	}
 
 	//Проверка на арифм. знак в конце
-	if (str[size - 1] == '+' || str[size - 1] == '-' || str[size - 1] == '*' || str[size - 1] == '/' || str[size - 1] == '^')
+	if (str[size - 1] == '+' || str[size - 1] == '-' || str[size - 1] == '*' || str[size - 1] == '/' || str[size - 1] == '^' || str[size - 1] == 'V')
 		return false;
 
 	return true;

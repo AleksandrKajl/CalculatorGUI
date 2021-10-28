@@ -6,6 +6,7 @@
 
 //Константы
 const int PRECESSION = 100000000;
+static char mes[] = "Invalid input";
 
 //Структура для хранения вещественного числа в целочисленном предстовлении
 struct FloatNumb
@@ -22,7 +23,7 @@ BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 int doColculations(char* input);
 int setText(HWND hEdit, char symb, char* str);
 int getText(HWND hEdit, char* str);
-void doSignNumb(HWND hEdit, char* str);
+void doSignNumb(HWND hEdit, char* str, char sign);
 void setSign(HWND hEdit, char symb, char* str, int& idx);
 bool checkPoint(char* str, int idx);
 bool checkInput(char* str);

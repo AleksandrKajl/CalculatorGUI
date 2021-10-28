@@ -2,7 +2,6 @@
 
 //Глобальные переменные
 static CHAR str[256]{};
-char mes[] = "Invalid input";
 static HWND hEdit;
 
 
@@ -89,7 +88,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 				setSign(hEdit, ',', str, idx);
 			break;
 		case IDC_SIGN:
-			doSignNumb(hEdit, str);
+			doSignNumb(hEdit, str, '-');
 			break;
 		case IDC_EQ:
 			getText(hEdit, str);
@@ -106,10 +105,13 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 			}
 //=============================================================================
-//=====================Кнопки x2===============================================
+//=====================Кнопки x2, 2Vx===============================================
 		case IDC_EXP:
-			setSign(hEdit, '^', str,idx);
-//			setText(hEdit, '2', str);
+			setSign(hEdit, '^', str, idx);
+			break;
+
+		case IDC_SQRT:
+			doSignNumb(hEdit, str, 'V');
 			break;
 //=============================================================================
 		}
