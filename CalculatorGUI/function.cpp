@@ -210,7 +210,7 @@ int numbCount(char* input, int i, bool direction)
 	int numb{};
 
 	//Если полученный результат выражения отрицательное число
-	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '^'))
+	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '^' && input[i] != 'V'))
 	{
 		++i;
 	}
@@ -266,6 +266,7 @@ int doColculations(char* input)
 
 	if (input[0] == 'V')
 	{
+		//lCount = 0;		//Нужно для корректной записи в массив функцией copy 
 		rCount = numbCount(input, i, true);
 		rNumb = charToDouble(input, i + rCount, rCount);
 
@@ -316,8 +317,7 @@ int doColculations(char* input)
 		{
 			int tmp = i;
 			i++;
-			//lCount = numbCount(input, i, false);
-			//lNumb = charToDouble(input, i - 1, lCount);
+			lCount = 0;		//Нужно для корректной записи в массив функцией copy 
 			rCount = numbCount(input, i, true);
 			rNumb = charToDouble(input, i + rCount, rCount);
 		
@@ -325,47 +325,6 @@ int doColculations(char* input)
 			compressionArr(input, i, result, lCount, rCount);
 			i = tmp - 1;
 		}
-		//if (input[i] == '*')
-		//{
-		//	//Считаем количество символов слево и справо от знака
-		//	lCount = numbCount(input, i, false);
-		//	rCount = numbCount(input, i, true);
-
-		//	lNumb = charToDouble(input, i - 1, lCount);	//i указывает на символ перед знаком
-		//	rNumb = charToDouble(input, i + rCount, rCount);
-		//	result = lNumb * rNumb;
-		//	compressionArr(input, i, result, lCount, rCount);
-		//}
-		//else if (input[i] == '/')
-		//{
-		//	lCount = numbCount(input, i, false);
-		//	lNumb = charToDouble(input, i - 1, lCount);
-		//	rCount = numbCount(input, i, true);
-		//	rNumb = charToDouble(input, i + rCount, rCount);
-
-		//	result = lNumb / rNumb;
-		//	compressionArr(input, i, result, lCount, rCount);
-		//}
-		//else if (input[i] == '^')
-		//{
-		//	lCount = numbCount(input, i, false);
-		//	lNumb = charToDouble(input, i - 1, lCount);
-		//	rCount = numbCount(input, i, true);
-		//	rNumb = charToDouble(input, i + rCount, rCount);
-
-		//	result = pow(lNumb,rNumb);
-		//	compressionArr(input, i, result, lCount, rCount);
-		//}
-		//else if (input[i] == 'V')
-		//{
-		//	lCount = numbCount(input, i, false);
-		//	lNumb = charToDouble(input, i - 1, lCount);
-		//	rCount = numbCount(input, i, true);
-		//	rNumb = charToDouble(input, i + rCount, rCount);
-
-		//	result = pow(lNumb, rNumb);
-		//	compressionArr(input, i, result, lCount, rCount);
-		//}
 
 		i++;
 	}
@@ -377,25 +336,42 @@ int doColculations(char* input)
 
 	while (input[i] != '\0')
 	{
-		if (input[i] == '+')
+		if ((input[i] == '+' || input[i] == '-') && input[i + 1] != 'V')
 		{
-			lCount = numbCount(input, i, false);
-			lNumb = charToDouble(input, i - 1, lCount);
-			rCount = numbCount(input, i, true);
-			rNumb = charToDouble(input, i + rCount, rCount);
+			switch (input[i])
+			{
+			case('+'):
+				lCount = numbCount(input, i, false);
+				lNumb = charToDouble(input, i - 1, lCount);
+				rCount = numbCount(input, i, true);
+				rNumb = charToDouble(input, i + rCount, rCount);
 
-			result = lNumb + rNumb;
-			compressionArr(input, i, result, lCount, rCount);
+				result = lNumb + rNumb;
+				compressionArr(input, i, result, lCount, rCount);
+				break;
+
+			case('-'):
+				lCount = numbCount(input, i, false);
+				lNumb = charToDouble(input, i - 1, lCount);
+				rCount = numbCount(input, i, true);
+				rNumb = charToDouble(input, i + rCount, rCount);
+
+				result = lNumb - rNumb;
+				compressionArr(input, i, result, lCount, rCount);
+				break;
+			}
 		}
-		else if (input[i] == '-')
+		else if (input[i + 1] == 'V')
 		{
-			lCount = numbCount(input, i, false);
-			lNumb = charToDouble(input, i - 1, lCount);
+			int tmp = i;
+			i++;
+			lCount = 0;		//Нужно для корректной записи в массив функцией copy 
 			rCount = numbCount(input, i, true);
 			rNumb = charToDouble(input, i + rCount, rCount);
 
-			result = lNumb - rNumb;
+			result = sqrt(rNumb);
 			compressionArr(input, i, result, lCount, rCount);
+			i = tmp - 1;
 		}
 
 		i++;
