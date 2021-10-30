@@ -5,60 +5,58 @@
 int _exp{};							//Показывает сколько нулей перед числом//#Разделяет целую и дробную часть вещественного числ
 
 //Методы класса Input
+
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
 //#Return: Количество введёных символов без \0
-int Input::setBuf(char symb, char* str)
+void Input::setBuf(char symb, char* input)
 {
-	int idx;
 	//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = this->getBuf(str);
-	str[idx] = symb;
+	getBuf(input);
+	input[idx] = symb;
 	++idx;
-	str[idx] = '\0';
+	input[idx] = '\0';
 	//Отправляет сообщение окну, минуя очередь
-	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
-	return idx;
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input));
 }
 
 //#Функция для получения символов из окна калькулятора
 //#Параметры: Дескриптор окна управления, символьный буфер
 //#Return: Количество полученных символов
-int Input::getBuf(char* str)
+void Input::getBuf(char* input)
 {
-	int idx{};
+//	int idx{};
 	//Отправляет сообщение окну, минуя очередь
-	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)str);
-	return idx;
+	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)input);
+	//return idx;
 }
 
 //#Функция устанавлевает унарный знак +/- или sqrt
 //#Параметры: Дескриптор окна управления, символьный буфер, унарный знак
-void Input::doSignVal(char* str, char sign)
+void Input::doSignVal(char* input, char sign)
 {
-	int idx{};
 	int count{};
 	//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = this->getBuf(str);
+	getBuf(input);
 	//Устанавлеваем на последний символ
 	int i{ idx - 1 };
 	//считаем количество символов до первого арефм. знака или до нулевого индекса буфера
-	while (str[i] != '-' && str[i] != '+' && str[i] != '*' && str[i] != '/' && str[i] != '^' && str[i] != 'V' && i >= 0)
+	while (input[i] != '-' && input[i] != '+' && input[i] != '*' && input[i] != '/' && input[i] != '^' && input[i] != 'V' && i >= 0)
 	{
 		++count;
 		--i;
 	}
 	//Если ставим минус квадратному корню
-	if (str[i] == 'V' && sign == '-')
+	if (input[i] == 'V' && sign == '-')
 		return;
-	else if (str[i] == '-' && sign == 'V')
+	else if (input[i] == '-' && sign == 'V')
 	{
 		SendMessage(hEdit, WM_SETTEXT, 0, LPARAM("Invalid input"));
 		return;
 	}
 
 	//Если стоял унарный знак
-	if (str[i] == sign && (str[i - 1] == '+' || str[i - 1] == '-' || str[i - 1] == '*' || str[i - 1] == '/' || str[i - 1] == '^' || i == 0))
+	if (input[i] == sign && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' || i == 0))
 	{
 		++count;
 	}
@@ -73,37 +71,37 @@ void Input::doSignVal(char* str, char sign)
 	char tmpBuf[24]{};
 	//Капируем число для которого меняем знак во временный буфер
 	for (int i{}, j{ idx }; i < count; ++i, ++j)
-		tmpBuf[i] = str[j];
+		tmpBuf[i] = input[j];
 
 	//Проверяем было ли число отрицательным
-	if (str[idx] == sign && (str[idx - 1] == '+' || str[idx - 1] == '-' ||
-		str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == '^' || idx == 0))
+	if (input[idx] == sign && (input[idx - 1] == '+' || input[idx - 1] == '-' ||
+		input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == '^' || idx == 0))
 	{
 		//Если было затираем знак который был
 		for (int i{ 1 }; i < count; ++i, ++idx)
-			str[idx] = tmpBuf[i];
+			input[idx] = tmpBuf[i];
 	}
 	else
 	{
 		//Записываем знак, затем число
 
-		str[idx++] = sign;
+		input[idx++] = sign;
 		for (int i{}; i < count; ++i, ++idx)
-			str[idx] = tmpBuf[i];
+			input[idx] = tmpBuf[i];
 	}
 
-	str[idx] = '\0';
+	input[idx] = '\0';
 	//Отправляет сообщение окну, минуя очередь
-	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input));
 }
 
 //#Функция записи арифм. знаков в буфер
-void Input::setSign(char symb, char* str, int& idx)
+void Input::setSign(char symb, char* input, int& idx)
 {
-	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || str[idx - 1] == '^' || idx == 0)
+	if (input[idx - 1] == '+' || input[idx - 1] == '-' || input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == ',' || input[idx - 1] == '^' || idx == 0)
 		return;
 	else
-		idx = this->setBuf(symb, str);
+		setBuf(symb, input);
 }
 
 

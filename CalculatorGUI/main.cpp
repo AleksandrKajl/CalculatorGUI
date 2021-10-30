@@ -1,7 +1,7 @@
 #include"function.h"
 
 //Глобальные переменные
-static CHAR str[256]{};
+//static CHAR str[256]{};
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -12,7 +12,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 {
-	int static idx{};
+	//int static idx{};
 	static Input inp;
 	switch (uMsg)
 	{
@@ -26,91 +26,90 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки от 1 до 9========================================
 			{
 		case IDC_ONE:
-			idx = inp.setBuf('1', str);
+			inp.setBuf('1', inp.input);
 			break;
 		case IDC_TWO:
-			idx = inp.setBuf('2', str);
+			inp.setBuf('2', inp.input);
 			break;
 		case IDC_TREE:
-			idx = inp.setBuf('3', str);
+			inp.setBuf('3', inp.input);
 			break;
 		case IDC_FOUR:
-			idx = inp.setBuf('4', str);
-			break;
-		case IDC_FIVE:
-			idx = inp.setBuf('5', str);
-			break;
-		case IDC_SIX:
-			idx = inp.setBuf('6', str);
-			break;
-		case IDC_SEVEN:
-			idx = inp.setBuf('7', str);
-			break;
-		case IDC_EIGHT:
-			idx = inp.setBuf('8', str);
-			break;
-		case IDC_NINE:
-			idx = inp.setBuf('9', str);
-			break;
-		case IDC_ZERO:
-			idx = inp.setBuf('0', str);
+			inp.setBuf('4', inp.input);
+			break;				  
+		case IDC_FIVE:			  
+			inp.setBuf('5', inp.input);
+			break;				  
+		case IDC_SIX:			  
+			inp.setBuf('6', inp.input);
+			break;				  
+		case IDC_SEVEN:			  
+			inp.setBuf('7', inp.input);
+			break;				  
+		case IDC_EIGHT:			  
+			inp.setBuf('8', inp.input);
+			break;				  
+		case IDC_NINE:			  
+			inp.setBuf('9', inp.input);
+			break;				  
+		case IDC_ZERO:			  
+			inp.setBuf('0', inp.input);
 			break;
 			}
 //=============================================================================
 //=====================Кнопки <--, +, -, /, *, =, ',', +/-, C================== 
 			{
 		case IDC_BACKSPACE:
-			--idx;
-			if (idx < 0)
+			inp.idx--;
+			if (inp.idx < 0)
 			{
-				idx = 0;
+				inp.idx = 0;
 				break;
 			}
-			str[idx] = '\0';
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(str));
+			inp.input[inp.idx] = '\0';
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_PLUS:
-			inp.setSign('+', str, idx);
-		//	idx = setText(hEdit, '+', str);
+			inp.setSign('+', inp.input, inp.idx);
 			break;
 		case IDC_MINUS:
-			inp.setSign('-', str, idx);
+			inp.setSign('-', inp.input, inp.idx);
 			break;
 		case IDC_MUL:
-			inp.setSign('*', str, idx);
+			inp.setSign('*', inp.input, inp.idx);
 			break;
 		case IDC_DIV:
-			inp.setSign('/', str, idx);
+			inp.setSign('/', inp.input, inp.idx);
 			break;
 		case IDC_POINT:
-			if (!checkPoint(str, idx))
-				inp.setSign(',', str, idx);
+			if (!checkPoint(inp.input, inp.idx))
+				inp.setSign(',', inp.input, inp.idx);
 			break;		   
 		case IDC_SIGN:	   
-			inp.doSignVal(str, '-');
+			inp.doSignVal(inp.input, '-');
 			break;
 		case IDC_EQ:
-			inp.getBuf(str);
-			if (checkInput(str))
-				idx = doColculations(str);
+			inp.getBuf(inp.input);
+			if (checkInput(inp.input))
+				inp.idx = doColculations(inp.input);
 			else
-				strcpy(str,"Invalid input");
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(str));
+				strcpy(inp.input,"Invalid input");
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_NULL:
-			idx = 0;
-			str[idx] = '\0';
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(str));
+			inp.idx = 0;
+			inp.input[inp.idx] = '\0';
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 			}
 //=============================================================================
 //=====================Кнопки x2, 2Vx===============================================
 		case IDC_EXP:
-			inp.setSign('^', str, idx);
+			inp.setSign('^', inp.input, inp.idx);
 			break;
 
 		case IDC_SQRT:
-			inp.doSignVal(str, 'V');
+			inp.doSignVal(inp.input, 'V');
 			break;
 //=============================================================================
 		}

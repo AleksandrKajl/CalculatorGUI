@@ -9,15 +9,20 @@ const int PRECESSION = 100000000;
 
 class Input
 {
-	
 public:
-	//char* str[256];
-	HWND hEdit;
-
-	int setBuf(char symb, char* str);
-	int getBuf(char* str);
-	void doSignVal(char* str, char sign);
-	void setSign(char symb, char* str, int& idx);
+	HWND hEdit;			//Дескриптор окна редактир.
+	char input[256];	//Буфер ввода
+	int idx;			//Показывает на конец строки, количество символов и текущую позицию
+	
+//Методы
+//Заносим символ в буфер ввода
+	void setBuf(char symb, char* input);
+//Метод для получения символов из окна калькулятора
+	void getBuf(char* input);
+//Метод устанавливает унарный знак +/- или sqrt
+	void doSignVal(char* input, char sign);
+//Метод записывает арифм. знак в буфер ввода
+	void setSign(char symb, char* input, int& idx);
 
 };
 
@@ -34,9 +39,5 @@ struct FloatNumb
 //Прототипы
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 int doColculations(char* input);
-//int setText(HWND hEdit, char symb, char* str);
-//int getText(HWND hEdit, char* str);
-//void doSignNumb(HWND hEdit, char* str, char sign);
-//void setSign(HWND hEdit, char symb, char* str, int& idx);
 bool checkPoint(char* str, int idx);
 bool checkInput(char* str);
