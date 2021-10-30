@@ -387,11 +387,11 @@ int doColculations(char* input)
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
 //#Return: Количество введёных символов без \0
-int setText(HWND hEdit,char symb, char* str)
+int Input::setBuf(char symb, char* str)
 {
 	int idx;
 //Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = getText(hEdit, str);
+	idx = this->getBuf(str);
 	str[idx] = symb;
 	++idx;
 	str[idx] = '\0';
@@ -403,7 +403,7 @@ int setText(HWND hEdit,char symb, char* str)
 //#Функция для получения символов из окна калькулятора
 //#Параметры: Дескриптор окна управления, символьный буфер
 //#Return: Количество полученных символов
-int getText(HWND hEdit, char* str)
+int Input::getBuf(char* str)
 {
 	int idx{};
 //Отправляет сообщение окну, минуя очередь
@@ -414,12 +414,12 @@ int getText(HWND hEdit, char* str)
 
 //#Функция устанавлевает унарный знак +/- или sqrt
 //#Параметры: Дескриптор окна управления, символьный буфер, унарный знак
-void doSignNumb(HWND hEdit, char* str, char sign)
+void Input::doSignNumb(char* str, char sign)
 {
 	int idx{};
 	int count{};
 //Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = getText(hEdit, str);
+	idx = this->getBuf(str);
 //Устанавлеваем на последний символ
 	int i{ idx - 1 };
 //считаем количество символов до первого арефм. знака или до нулевого индекса буфера
@@ -433,7 +433,7 @@ void doSignNumb(HWND hEdit, char* str, char sign)
 		return;
 	else if (str[i] == '-' && sign == 'V')
 	{
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(mes));
+			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM("Invalid input"));
 			return;
 	}
 
@@ -478,12 +478,12 @@ void doSignNumb(HWND hEdit, char* str, char sign)
 }
 
 //#Функция записи арифм. знаков в буфер
-void setSign(HWND hEdit,char symb, char* str, int& idx)
+void Input::setSign(char symb, char* str, int& idx)
 {
 	if (str[idx - 1] == '+' || str[idx - 1] == '-' || str[idx - 1] == '*' || str[idx - 1] == '/' || str[idx - 1] == ',' || str[idx - 1] == '^' || idx == 0)
 		return;
 	else
-		idx = setText(hEdit, symb, str);
+		idx = this->setBuf(symb, str);
 }
 
 //#Функция проверяет число на установленную точку(запятую) 
@@ -504,17 +504,6 @@ int len(char* str)
 	while (str[len] != '\0')
 		len++;
 	return len;
-}
-
-void strCopy(char* str, char* mes)
-{
-	int i{};
-	while (mes[i] != '\0')
-	{
-		str[i] = mes[i];
-		i++;
-	}
-	str[i] = '\0';
 }
 
 bool checkInput(char* str)
