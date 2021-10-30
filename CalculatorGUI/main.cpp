@@ -87,7 +87,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 				inp.setSign(',', str, idx);
 			break;		   
 		case IDC_SIGN:	   
-			inp.doSignNumb(str, '-');
+			inp.doSignVal(str, '-');
 			break;
 		case IDC_EQ:
 			inp.getBuf(str);
@@ -110,7 +110,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_SQRT:
-			inp.doSignNumb(str, 'V');
+			inp.doSignVal(str, 'V');
 			break;
 //=============================================================================
 		}

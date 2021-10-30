@@ -16,7 +16,7 @@ public:
 
 	int setBuf(char symb, char* str);
 	int getBuf(char* str);
-	void doSignNumb(char* str, char sign);
+	void doSignVal(char* str, char sign);
 	void setSign(char symb, char* str, int& idx);
 
 };
