@@ -1,9 +1,7 @@
 #include"function.h"
 
 //Глобальные переменные
-static CHAR str[256]{};
-static HWND hEdit;
-
+//static CHAR str[256]{};
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -14,11 +12,11 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 {
-	int static idx{};
+	static Input inp;
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
-		hEdit = GetDlgItem(hWnd, IDC_MYEDIT);
+		inp.hEdit = GetDlgItem(hWnd, IDC_MYEDIT);
 		break;
 
 	case WM_COMMAND:
@@ -27,91 +25,91 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки от 1 до 9========================================
 			{
 		case IDC_ONE:
-			idx = setText(hEdit, '1', str);
+			inp.setBuf('1');
 			break;
 		case IDC_TWO:
-			idx = setText(hEdit, '2', str);
+			inp.setBuf('2');
 			break;
 		case IDC_TREE:
-			idx = setText(hEdit, '3', str);
+			inp.setBuf('3');
 			break;
 		case IDC_FOUR:
-			idx = setText(hEdit, '4', str);
-			break;
-		case IDC_FIVE:
-			idx = setText(hEdit, '5', str);
-			break;
-		case IDC_SIX:
-			idx = setText(hEdit, '6', str);
-			break;
-		case IDC_SEVEN:
-			idx = setText(hEdit, '7', str);
-			break;
-		case IDC_EIGHT:
-			idx = setText(hEdit, '8', str);
-			break;
-		case IDC_NINE:
-			idx = setText(hEdit, '9', str);
-			break;
-		case IDC_ZERO:
-			idx = setText(hEdit, '0', str);
+			inp.setBuf('4');
+			break;		
+		case IDC_FIVE:	
+			inp.setBuf('5');
+			break;		
+		case IDC_SIX:	
+			inp.setBuf('6');
+			break;		
+		case IDC_SEVEN:	
+			inp.setBuf('7');
+			break;		
+		case IDC_EIGHT:	
+			inp.setBuf('8');
+			break;		
+		case IDC_NINE:	
+			inp.setBuf('9');
+			break;		
+		case IDC_ZERO:	
+			inp.setBuf('0');
 			break;
 			}
 //=============================================================================
 //=====================Кнопки <--, +, -, /, *, =, ',', +/-, C================== 
 			{
 		case IDC_BACKSPACE:
-			--idx;
-			if (idx < 0)
+			inp.idx--;
+			if (inp.idx < 0)
 			{
-				idx = 0;
+				inp.idx = 0;
 				break;
 			}
-			str[idx] = '\0';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+			inp.input[inp.idx] = '\0';
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_PLUS:
-			setSign(hEdit, '+', str, idx);
-		//	idx = setText(hEdit, '+', str);
+			inp.setSign('+');
 			break;
 		case IDC_MINUS:
-			setSign(hEdit, '-', str, idx);
+			inp.setSign('-');
 			break;
 		case IDC_MUL:
-			setSign(hEdit, '*', str, idx);
+			inp.setSign('*');
 			break;
 		case IDC_DIV:
-			setSign(hEdit, '/', str, idx);
+			inp.setSign('/');
 			break;
 		case IDC_POINT:
-			if (!checkPoint(str, idx))
-				setSign(hEdit, ',', str, idx);
-			break;
-		case IDC_SIGN:
-			doSignNumb(hEdit, str, '-');
+			if (!inp.checkPoint())
+				inp.setSign(',');
+			break;		   
+		case IDC_SIGN:	   
+			inp.doSignVal('-');
 			break;
 		case IDC_EQ:
-			getText(hEdit, str);
-			if (checkInput(str))
-				idx = doColculations(str);
+			//Отправляет сообщение окну, минуя очередь
+			inp.idx = SendMessage(inp.hEdit, WM_GETTEXT, 256, (LPARAM)inp.input);
+			if (inp.checkInput())
+				inp.idx = doColculations(inp.input);
 			else
-				strCopy(str, mes);
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+				strcpy(inp.input,"Invalid input");
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_NULL:
-			idx = 0;
-			str[idx] = '\0';
-			SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(str));
+			inp.idx = 0;
+			inp.input[inp.idx] = '\0';
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 			}
 //=============================================================================
 //=====================Кнопки x2, 2Vx===============================================
 		case IDC_EXP:
-			setSign(hEdit, '^', str, idx);
+			inp.setSign('^');
 			break;
 
 		case IDC_SQRT:
-			doSignNumb(hEdit, str, 'V');
+			inp.doSignVal('V');
 			break;
 //=============================================================================
 		}
