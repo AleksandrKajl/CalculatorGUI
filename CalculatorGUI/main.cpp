@@ -12,7 +12,6 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 
 BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 {
-	//int static idx{};
 	static Input inp;
 	switch (uMsg)
 	{
@@ -26,34 +25,34 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки от 1 до 9========================================
 			{
 		case IDC_ONE:
-			inp.setBuf('1', inp.input);
+			inp.setBuf('1');
 			break;
 		case IDC_TWO:
-			inp.setBuf('2', inp.input);
+			inp.setBuf('2');
 			break;
 		case IDC_TREE:
-			inp.setBuf('3', inp.input);
+			inp.setBuf('3');
 			break;
 		case IDC_FOUR:
-			inp.setBuf('4', inp.input);
-			break;				  
-		case IDC_FIVE:			  
-			inp.setBuf('5', inp.input);
-			break;				  
-		case IDC_SIX:			  
-			inp.setBuf('6', inp.input);
-			break;				  
-		case IDC_SEVEN:			  
-			inp.setBuf('7', inp.input);
-			break;				  
-		case IDC_EIGHT:			  
-			inp.setBuf('8', inp.input);
-			break;				  
-		case IDC_NINE:			  
-			inp.setBuf('9', inp.input);
-			break;				  
-		case IDC_ZERO:			  
-			inp.setBuf('0', inp.input);
+			inp.setBuf('4');
+			break;		
+		case IDC_FIVE:	
+			inp.setBuf('5');
+			break;		
+		case IDC_SIX:	
+			inp.setBuf('6');
+			break;		
+		case IDC_SEVEN:	
+			inp.setBuf('7');
+			break;		
+		case IDC_EIGHT:	
+			inp.setBuf('8');
+			break;		
+		case IDC_NINE:	
+			inp.setBuf('9');
+			break;		
+		case IDC_ZERO:	
+			inp.setBuf('0');
 			break;
 			}
 //=============================================================================
@@ -70,27 +69,28 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_PLUS:
-			inp.setSign('+', inp.input, inp.idx);
+			inp.setSign('+');
 			break;
 		case IDC_MINUS:
-			inp.setSign('-', inp.input, inp.idx);
+			inp.setSign('-');
 			break;
 		case IDC_MUL:
-			inp.setSign('*', inp.input, inp.idx);
+			inp.setSign('*');
 			break;
 		case IDC_DIV:
-			inp.setSign('/', inp.input, inp.idx);
+			inp.setSign('/');
 			break;
 		case IDC_POINT:
-			if (!checkPoint(inp.input, inp.idx))
-				inp.setSign(',', inp.input, inp.idx);
+			if (!inp.checkPoint())
+				inp.setSign(',');
 			break;		   
 		case IDC_SIGN:	   
-			inp.doSignVal(inp.input, '-');
+			inp.doSignVal('-');
 			break;
 		case IDC_EQ:
-			inp.getBuf(inp.input);
-			if (checkInput(inp.input))
+			//Отправляет сообщение окну, минуя очередь
+			inp.idx = SendMessage(inp.hEdit, WM_GETTEXT, 256, (LPARAM)inp.input);
+			if (inp.checkInput())
 				inp.idx = doColculations(inp.input);
 			else
 				strcpy(inp.input,"Invalid input");
@@ -105,11 +105,11 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=============================================================================
 //=====================Кнопки x2, 2Vx===============================================
 		case IDC_EXP:
-			inp.setSign('^', inp.input, inp.idx);
+			inp.setSign('^');
 			break;
 
 		case IDC_SQRT:
-			inp.doSignVal(inp.input, 'V');
+			inp.doSignVal('V');
 			break;
 //=============================================================================
 		}

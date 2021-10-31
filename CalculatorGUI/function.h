@@ -9,6 +9,7 @@ const int PRECESSION = 100000000;
 
 class Input
 {
+
 public:
 	HWND hEdit;			//Дескриптор окна редактир.
 	char input[256];	//Буфер ввода
@@ -16,14 +17,15 @@ public:
 	
 //Методы
 //Заносим символ в буфер ввода
-	void setBuf(char symb, char* input);
-//Метод для получения символов из окна калькулятора
-	void getBuf(char* input);
+	void setBuf(char symb);
 //Метод устанавливает унарный знак +/- или sqrt
-	void doSignVal(char* input, char sign);
+	void doSignVal(char sign);
 //Метод записывает арифм. знак в буфер ввода
-	void setSign(char symb, char* input, int& idx);
-
+	void setSign(char sign);
+//Метод проверяет число на установленную точку(запятую) 
+	bool checkPoint();
+//Метод проверки корректного ввода
+	bool checkInput();
 };
 
 //Структура для хранения вещественного числа в целочисленном предстовлении
@@ -39,5 +41,4 @@ struct FloatNumb
 //Прототипы
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
 int doColculations(char* input);
-bool checkPoint(char* str, int idx);
-bool checkInput(char* str);
+
