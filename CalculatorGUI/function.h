@@ -28,6 +28,13 @@ public:
 	bool checkInput();
 };
 
+class Calculator
+{
+
+public:
+	int doColculations(char* input);
+};
+
 //Структура для хранения вещественного числа в целочисленном предстовлении
 struct FloatNumb
 {
@@ -40,5 +47,5 @@ struct FloatNumb
 
 //Прототипы
 BOOL CALLBACK DlgProc(HWND, UINT, WPARAM, LPARAM);
-int doColculations(char* input);
+//int doColculations(char* input);
 

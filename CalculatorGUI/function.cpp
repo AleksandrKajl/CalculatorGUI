@@ -421,7 +421,7 @@ int numbCount(char* input, int i, bool direction)
 
 //#Вычесления значений вырожения# 
 //#Принимает: массив преобразованных данных в символы, размер массива#
-int doColculations(char* input)
+int Calculator::doColculations(char* input)
 {
 	double result{};
 	double lNumb{}, rNumb{};
@@ -441,7 +441,7 @@ int doColculations(char* input)
 	//processing * and /
 	while (input[i] != '\0')
 	{
-		if ((input[i] == '*' || input[i] == '/' || input[i] == '^') && input[i+1] != 'V')
+		if ((input[i] == '*' || input[i] == '/' || input[i] == '^') && input[i + 1] != 'V')
 		{
 			switch (input[i])
 			{
@@ -484,7 +484,7 @@ int doColculations(char* input)
 			lCount = 0;		//Нужно для корректной записи в массив функцией copy 
 			rCount = numbCount(input, i, true);
 			rNumb = charToDouble(input, i + rCount, rCount);
-		
+
 			result = sqrt(rNumb);
 			writeRes(input, i, result, lCount, rCount);
 			i = tmp - 1;
