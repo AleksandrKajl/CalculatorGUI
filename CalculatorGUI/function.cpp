@@ -5,7 +5,6 @@
 int _exp{};							//Показывает сколько нулей перед числом//#Разделяет целую и дробную часть вещественного числ
 
 //Методы класса Input
-
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
 //#Return: Количество введёных символов без \0
@@ -170,10 +169,12 @@ bool Input::checkInput()
 	return true;
 }
 
+//Методы класса Calculator
+//#Разделяет вещественное число на целую и дробную часть
 //#Принимает: структура в которую заносится результат, число которое предстоит разделить
-void devideDouble(FloatNumb& obj, double val)
+void Calculator::devideDouble(FloatNumb& obj, long double val)
 {
-	//Если число отрицательное устанавлеваем влаг
+	//Если число отрицательное устанавлеваем флаг
 	if (val < 0)
 	{
 		val = -val;
@@ -194,12 +195,10 @@ void devideDouble(FloatNumb& obj, double val)
 			tmp /= 10;
 		}
 		obj.decPart = static_cast<int>(tmpVal * PRECESSION);
-
 	}
-
 }
 
-void inversArr(char* buf, bool negative, const int SZ)
+void Calculator::inversArr(char* buf, bool negative, const int SZ)
 {
 	int i{};
 	if (negative == true)
@@ -212,7 +211,7 @@ void inversArr(char* buf, bool negative, const int SZ)
 		std::swap(buf[i], buf[j]);
 }
 
-void intToChar(char* buf, FloatNumb & obj)
+void Calculator::intToChar(char* buf, FloatNumb & obj)
 {
 	int i{};
 	while (true)
@@ -249,26 +248,26 @@ void intToChar(char* buf, FloatNumb & obj)
 
 }
 
-void DoubleToChar(char* buf, double result)
+void Calculator::DoubleToChar(char* buf)
 {
 	FloatNumb obj;
 	devideDouble(obj, result);
 	intToChar(buf, obj);
 }
 
-void copy(char* input, int& i, int& lnumb, char* buftmp)
+void Calculator::copy(char* input, char* buftmp)
 {
 
-	i -= lnumb;
-	if (i > 0 && input[i - 1] == '-' && (input[i - 2] == '+' || input[i - 2] == '-' || input[i - 2] == '*' || input[i - 2] == '/' || (i - 1) == 0))
-		i--;
+	idx -= lCount;
+	if (idx > 0 && input[idx - 1] == '-' && (input[idx - 2] == '+' || input[idx - 2] == '-' || input[idx - 2] == '*' || input[idx - 2] == '/' || (idx - 1) == 0))
+		idx--;
 
 	int j{};
 	while (buftmp[j] != '\0')
 	{
-		input[i] = buftmp[j];
+		input[idx] = buftmp[j];
 		j++;
-		i++;
+		idx++;
 	}
 }
 
@@ -280,8 +279,8 @@ void Calculator::writeRes(char* input)
 	char buf[256]{};
 	if (input[idx + (rCount + 1)] == '\0')
 	{
-		DoubleToChar(buf, result);
-		copy(input, idx, lCount, buf);
+		DoubleToChar(buf);
+		copy(input, buf);
 		input[idx] = '\0';
 		idx--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
 	}
@@ -299,8 +298,8 @@ void Calculator::writeRes(char* input)
 		buftmp[j] = '\0';
 		j = 0;
 
-		DoubleToChar(buf, result);
-		copy(input, idx, lCount, buf);
+		DoubleToChar(buf);
+		copy(input, buf);
 		int tmp{ idx };  //Временная переменная для хранения индекса
 
 		while (buftmp[j] != '\0')
@@ -312,12 +311,11 @@ void Calculator::writeRes(char* input)
 		input[idx] = '\0';
 		idx = tmp - 1;
 	}
-
 }
 
 //#Переводит символы в числа#
 //#Принимает: массив данных, текущий указатель на последний символ пер. числа, кол. символов в переводимом числе# 
-double charToDouble(char* input, int i, int numb)
+double Calculator::charToDouble(char* input, int i, int numb)
 {
 	int i_numb{};
 	double f_numb{};
