@@ -5,11 +5,10 @@
 #include"resource.h"
 
 //Константы
-const int PRECESSION = 100000000;
+const unsigned long long PRECESSION = 1000000000;
 
 class Input
 {
-
 public:
 	HWND hEdit;			//Дескриптор окна редактир.
 	char input[256];	//Буфер ввода
@@ -30,10 +29,22 @@ public:
 
 class Calculator
 {
+	long double result;
+	long double lVal;
+	long double rVal;
+	int lCount;
+	int rCount;
+	int idx;
 
+//Метод извлечения данных из массива(lValue и rValue)
+	void dataExtraction(char* input);
+	void extSQRT(char* input);
+//Вычесляет колличество символов числа, до арифмитического знака или после
+	int numbCount(char* input, int i, bool direction);
 public:
+//Основной публичный метод
 	int doColculations(char* input);
-};
+ };
 
 //Структура для хранения вещественного числа в целочисленном предстовлении
 struct FloatNumb

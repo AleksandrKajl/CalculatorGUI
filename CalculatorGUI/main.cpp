@@ -1,8 +1,5 @@
 #include"function.h"
 
-//Глобальные переменные
-//static CHAR str[256]{};
-
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_MYDIALOG), 0, (DlgProc), 0);
