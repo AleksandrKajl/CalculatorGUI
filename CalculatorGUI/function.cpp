@@ -5,7 +5,6 @@
 int _exp{};							//Показывает сколько нулей перед числом//#Разделяет целую и дробную часть вещественного числ
 
 //Методы класса Input
-
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
 //#Return: Количество введёных символов без \0
@@ -170,10 +169,12 @@ bool Input::checkInput()
 	return true;
 }
 
+//Методы класса Calculator
+//#Разделяет вещественное число на целую и дробную часть
 //#Принимает: структура в которую заносится результат, число которое предстоит разделить
-void devideDouble(FloatNumb& obj, double val)
+void Calculator::devideDouble(FloatNumb& obj, long double val)
 {
-	//Если число отрицательное устанавлеваем влаг
+	//Если число отрицательное устанавлеваем флаг
 	if (val < 0)
 	{
 		val = -val;
@@ -194,12 +195,10 @@ void devideDouble(FloatNumb& obj, double val)
 			tmp /= 10;
 		}
 		obj.decPart = static_cast<int>(tmpVal * PRECESSION);
-
 	}
-
 }
 
-void inversArr(char* buf, bool negative, const int SZ)
+void Calculator::inversArr(char* buf, bool negative, const int SZ)
 {
 	int i{};
 	if (negative == true)
@@ -212,7 +211,7 @@ void inversArr(char* buf, bool negative, const int SZ)
 		std::swap(buf[i], buf[j]);
 }
 
-void intToChar(char* buf, FloatNumb & obj)
+void Calculator::intToChar(char* buf, FloatNumb & obj)
 {
 	int i{};
 	while (true)
@@ -249,75 +248,74 @@ void intToChar(char* buf, FloatNumb & obj)
 
 }
 
-void DoubleToChar(char* buf, double result)
+void Calculator::DoubleToChar(char* buf)
 {
 	FloatNumb obj;
 	devideDouble(obj, result);
 	intToChar(buf, obj);
 }
 
-void copy(char* input, int& i, int& lnumb, char* buftmp)
+void Calculator::copy(char* input, char* buftmp)
 {
 
-	i -= lnumb;
-	if (i > 0 && input[i - 1] == '-' && (input[i - 2] == '+' || input[i - 2] == '-' || input[i - 2] == '*' || input[i - 2] == '/' || (i - 1) == 0))
-		i--;
+	idx -= lCount;
+	if (idx > 0 && input[idx - 1] == '-' && (input[idx - 2] == '+' || input[idx - 2] == '-' || input[idx - 2] == '*' || input[idx - 2] == '/' || (idx - 1) == 0))
+		idx--;
 
 	int j{};
 	while (buftmp[j] != '\0')
 	{
-		input[i] = buftmp[j];
+		input[idx] = buftmp[j];
 		j++;
-		i++;
+		idx++;
 	}
 }
 
 //#Запись результата подвырожения в массив
 //#Принимает: Массив с данными, размер массива, текущая поз. в массиве, результат вырожения,
 //кол. символов лев. числа от ар. знака, кол. символов правого числа#
-void writeRes(char* input, int& i, double result, int lnumb, int rnumb)
+void Calculator::writeRes(char* input)
 {
 	char buf[256]{};
-	if (input[i + (rnumb + 1)] == '\0')
+	if (input[idx + (rCount + 1)] == '\0')
 	{
-		DoubleToChar(buf, result);
-		copy(input, i, lnumb, buf);
-		input[i] = '\0';
-		i--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
+		DoubleToChar(buf);
+		copy(input, buf);
+		input[idx] = '\0';
+		idx--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
 	}
 	else
 	{
 		char buftmp[256]{};
-		int j{}, k{ i };
+		int j{}, k{ idx };
 
-		while (input[k + rnumb + 1] != '\0')
+		while (input[k + rCount + 1] != '\0')
 		{
-			buftmp[j] = input[k + rnumb + 1];
+			buftmp[j] = input[k + rCount + 1];
 			j++;
 			k++;
 		}
 		buftmp[j] = '\0';
 		j = 0;
 
-		DoubleToChar(buf, result);
-		copy(input, i, lnumb, buf);
-		int tmp{ i };  //Временная переменная для хранения индекса
+		DoubleToChar(buf);
+		copy(input, buf);
+		int tmp{ idx };  //Временная переменная для хранения индекса
 
 		while (buftmp[j] != '\0')
 		{
-			input[i] = buftmp[j];
+			input[idx] = buftmp[j];
 			j++;
-			i++;
+			idx++;
 		}
-		input[i] = '\0';
-		i = tmp - 1;
+		input[idx] = '\0';
+		idx = tmp - 1;
 	}
-
 }
 
 //#Переводит символы в числа#
 //#Принимает: массив данных, текущий указатель на последний символ пер. числа, кол. символов в переводимом числе# 
-double charToDouble(char* input, int i, int numb)
+double Calculator::charToDouble(char* input, int i, int numb)
 {
 	int i_numb{};
 	double f_numb{};
@@ -370,9 +368,9 @@ double charToDouble(char* input, int i, int numb)
 //#Вычесляет колличество символов числа, до арифмитического знака или после#
 //#Принимает: массив с данными, текущая позиция в массиве, флаг направления  true - 
 //в право(число находящаяся с право от ар. знака), false - влево.#
-int numbCount(char* input, int i, bool direction)
+int Calculator::numbCount(char* input, int i, bool direction)
 {
-	int numb{};
+	int cnt{};
 
 	//Если полученный результат выражения отрицательное число
 	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '^' && input[i] != 'V'))
@@ -385,7 +383,7 @@ int numbCount(char* input, int i, bool direction)
 		//Считаем количество символов до следующего знака
 		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && input[i - 1] != '^' && i != 0)
 		{
-			++numb;
+			++cnt;
 			--i;
 		}
 	}
@@ -394,7 +392,7 @@ int numbCount(char* input, int i, bool direction)
 		if (input[i + 1] == '-')//Если унарный минус
 		{
 			++i;				//Начинаем с него
-			++numb;				//И берём его в счёт(в левую сторону не надо)
+			++cnt;				//И берём его в счёт(в левую сторону не надо)
 		}
 
 //Если это результат выражения
@@ -402,7 +400,7 @@ int numbCount(char* input, int i, bool direction)
 		{
 			while (input[i] != '\0')
 			{
-				++numb;
+				++cnt;
 				++i;
 			}
 		}
@@ -411,141 +409,123 @@ int numbCount(char* input, int i, bool direction)
 		{
 			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '^' && input[i + 1] != '\0')
 			{
-				++numb;
+				++cnt;
 				++i;
 			}
 		}
 	}
-	return numb;
+	return cnt;
 }
 
+//#Метод извлечения данных из массива(lValue и rValue)#
+//#Принимает массив данных#
+void Calculator::dataExtraction(char* input)
+{
+	//Считаем количество символов слево и справо от знака
+	lCount = numbCount(input, idx, false);
+	lVal = charToDouble(input, idx - 1, lCount);	//idx указывает на символ перед знаком
+	rCount = numbCount(input, idx, true);
+	rVal = charToDouble(input, idx + rCount, rCount); //idx показывает на последний символ числа
+}
+
+//#Метод извлечения квадратного корня из числа#
+//#Принимает массив данных#
+void Calculator::extSQRT(char* input)
+{
+	lCount = 0;		//Нужно для корректной записи в массив функцией copy 
+	rCount = numbCount(input, idx, true);
+	rVal = charToDouble(input, idx + rCount, rCount);
+
+	result = sqrt(rVal);
+	writeRes(input);
+}
 //#Вычесления значений вырожения# 
 //#Принимает: массив преобразованных данных в символы, размер массива#
-int doColculations(char* input)
+int Calculator::doColculations(char* input)
 {
-	double result{};
-	double lNumb{}, rNumb{};
-	int lCount{}, rCount{};
-	int i{};
-
 	if (input[0] == 'V')
-	{
-		//lCount = 0;		//Нужно для корректной записи в массив функцией copy 
-		rCount = numbCount(input, i, true);
-		rNumb = charToDouble(input, i + rCount, rCount);
-
-		result = sqrt(rNumb);
-		writeRes(input, i, result, lCount, rCount);
-	}
+		extSQRT(input);
 
 	//processing * and /
-	while (input[i] != '\0')
+	while (input[idx] != '\0')
 	{
-		if ((input[i] == '*' || input[i] == '/' || input[i] == '^') && input[i+1] != 'V')
+		if ((input[idx] == '*' || input[idx] == '/' || input[idx] == '^') && input[idx + 1] != 'V')
 		{
-			switch (input[i])
+			switch (input[idx])
 			{
 			case('*'):
-				//Считаем количество символов слево и справо от знака
-				lCount = numbCount(input, i, false);
-				rCount = numbCount(input, i, true);
-
-				lNumb = charToDouble(input, i - 1, lCount);	//i указывает на символ перед знаком
-				rNumb = charToDouble(input, i + rCount, rCount);
-				result = lNumb * rNumb;
-				writeRes(input, i, result, lCount, rCount);
+				dataExtraction(input);
+				result = lVal * rVal;
+				writeRes(input);
 				break;
 
 			case('/'):
-				lCount = numbCount(input, i, false);
-				lNumb = charToDouble(input, i - 1, lCount);
-				rCount = numbCount(input, i, true);
-				rNumb = charToDouble(input, i + rCount, rCount);
-
-				result = lNumb / rNumb;
-				writeRes(input, i, result, lCount, rCount);
+				dataExtraction(input);
+				result = lVal / rVal;
+				writeRes(input);
 				break;
 
 			case('^'):
-				lCount = numbCount(input, i, false);
-				lNumb = charToDouble(input, i - 1, lCount);
-				rCount = numbCount(input, i, true);
-				rNumb = charToDouble(input, i + rCount, rCount);
-
-				result = pow(lNumb, rNumb);
-				writeRes(input, i, result, lCount, rCount);
+				dataExtraction(input);
+				result = pow(lVal, rVal);
+				writeRes(input);
 				break;
 			}
 		}
-		else if (input[i + 1] == 'V')
+		else if (input[idx + 1] == 'V')
 		{
-			int tmp = i;
-			i++;
-			lCount = 0;		//Нужно для корректной записи в массив функцией copy 
-			rCount = numbCount(input, i, true);
-			rNumb = charToDouble(input, i + rCount, rCount);
-		
-			result = sqrt(rNumb);
-			writeRes(input, i, result, lCount, rCount);
-			i = tmp - 1;
+			int tmp = idx;
+			idx++;
+
+			extSQRT(input);
+			idx = tmp - 1;
 		}
 
-		i++;
+		idx++;
 	}
 	//Pocessing + and -
 	if (input[0] == '-')
-		i = 1;
+		idx = 1;
 	else
-		i = 0;
+		idx = 0;
 
-	while (input[i] != '\0')
+	while (input[idx] != '\0')
 	{
-		if ((input[i] == '+' || input[i] == '-') && input[i + 1] != 'V')
+		if ((input[idx] == '+' || input[idx] == '-') && input[idx + 1] != 'V')
 		{
-			switch (input[i])
+			switch (input[idx])
 			{
 			case('+'):
-				lCount = numbCount(input, i, false);
-				lNumb = charToDouble(input, i - 1, lCount);
-				rCount = numbCount(input, i, true);
-				rNumb = charToDouble(input, i + rCount, rCount);
-
-				result = lNumb + rNumb;
-				writeRes(input, i, result, lCount, rCount);
+				dataExtraction(input);
+				result = lVal + rVal;
+				writeRes(input);
 				break;
 
 			case('-'):
-				lCount = numbCount(input, i, false);
-				lNumb = charToDouble(input, i - 1, lCount);
-				rCount = numbCount(input, i, true);
-				rNumb = charToDouble(input, i + rCount, rCount);
-
-				result = lNumb - rNumb;
-				writeRes(input, i, result, lCount, rCount);
+				dataExtraction(input);
+				result = lVal - rVal;
+				writeRes(input);
 				break;
 			}
 		}
-		else if (input[i + 1] == 'V')
+		else if (input[idx + 1] == 'V')
 		{
-			int tmp = i;
-			i++;
-			lCount = 0;		//Нужно для корректной записи в массив функцией copy 
-			rCount = numbCount(input, i, true);
-			rNumb = charToDouble(input, i + rCount, rCount);
+			int tmp = idx;
+			idx++;
 
-			result = sqrt(rNumb);
-			writeRes(input, i, result, lCount, rCount);
-			i = tmp - 1;
+			extSQRT(input);
+			idx = tmp - 1;
 		}
 
-		i++;
+		idx++;
 	}
 
-	i = 0;
-	while (input[i] != '\0')
-		++i;
+	idx = 0;
+	while (input[idx] != '\0')
+		++idx;
+	idx = 0;
 
-	return i;
+	return idx;
 }
 
 

@@ -1,8 +1,5 @@
 #include"function.h"
 
-//Глобальные переменные
-//static CHAR str[256]{};
-
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
 	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_MYDIALOG), 0, (DlgProc), 0);
@@ -13,6 +10,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 {
 	static Input inp;
+	static Calculator calc;
 	switch (uMsg)
 	{
 	case WM_INITDIALOG:
@@ -91,7 +89,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			//Отправляет сообщение окну, минуя очередь
 			inp.idx = SendMessage(inp.hEdit, WM_GETTEXT, 256, (LPARAM)inp.input);
 			if (inp.checkInput())
-				inp.idx = doColculations(inp.input);
+				inp.idx = calc.doColculations(inp.input);
 			else
 				strcpy(inp.input,"Invalid input");
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
