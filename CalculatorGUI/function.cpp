@@ -275,24 +275,24 @@ void copy(char* input, int& i, int& lnumb, char* buftmp)
 //#Запись результата подвырожения в массив
 //#Принимает: Массив с данными, размер массива, текущая поз. в массиве, результат вырожения,
 //кол. символов лев. числа от ар. знака, кол. символов правого числа#
-void writeRes(char* input, int& i, double result, int lnumb, int rnumb)
+void Calculator::writeRes(char* input)
 {
 	char buf[256]{};
-	if (input[i + (rnumb + 1)] == '\0')
+	if (input[idx + (rCount + 1)] == '\0')
 	{
 		DoubleToChar(buf, result);
-		copy(input, i, lnumb, buf);
-		input[i] = '\0';
-		i--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
+		copy(input, idx, lCount, buf);
+		input[idx] = '\0';
+		idx--;				//Чтобы указать на последний символ в массиве и не делать проход по нему
 	}
 	else
 	{
 		char buftmp[256]{};
-		int j{}, k{ i };
+		int j{}, k{ idx };
 
-		while (input[k + rnumb + 1] != '\0')
+		while (input[k + rCount + 1] != '\0')
 		{
-			buftmp[j] = input[k + rnumb + 1];
+			buftmp[j] = input[k + rCount + 1];
 			j++;
 			k++;
 		}
@@ -300,17 +300,17 @@ void writeRes(char* input, int& i, double result, int lnumb, int rnumb)
 		j = 0;
 
 		DoubleToChar(buf, result);
-		copy(input, i, lnumb, buf);
-		int tmp{ i };  //Временная переменная для хранения индекса
+		copy(input, idx, lCount, buf);
+		int tmp{ idx };  //Временная переменная для хранения индекса
 
 		while (buftmp[j] != '\0')
 		{
-			input[i] = buftmp[j];
+			input[idx] = buftmp[j];
 			j++;
-			i++;
+			idx++;
 		}
-		input[i] = '\0';
-		i = tmp - 1;
+		input[idx] = '\0';
+		idx = tmp - 1;
 	}
 
 }
@@ -439,7 +439,7 @@ void Calculator::extSQRT(char* input)
 	rVal = charToDouble(input, idx + rCount, rCount);
 
 	result = sqrt(rVal);
-	writeRes(input, idx, result, lCount, rCount);
+	writeRes(input);
 }
 //#Вычесления значений вырожения# 
 //#Принимает: массив преобразованных данных в символы, размер массива#
@@ -458,19 +458,19 @@ int Calculator::doColculations(char* input)
 			case('*'):
 				dataExtraction(input);
 				result = lVal * rVal;
-				writeRes(input, idx, result, lCount, rCount);
+				writeRes(input);
 				break;
 
 			case('/'):
 				dataExtraction(input);
 				result = lVal / rVal;
-				writeRes(input, idx, result, lCount, rCount);
+				writeRes(input);
 				break;
 
 			case('^'):
 				dataExtraction(input);
 				result = pow(lVal, rVal);
-				writeRes(input, idx, result, lCount, rCount);
+				writeRes(input);
 				break;
 			}
 		}
@@ -500,13 +500,13 @@ int Calculator::doColculations(char* input)
 			case('+'):
 				dataExtraction(input);
 				result = lVal + rVal;
-				writeRes(input, idx, result, lCount, rCount);
+				writeRes(input);
 				break;
 
 			case('-'):
 				dataExtraction(input);
 				result = lVal - rVal;
-				writeRes(input, idx, result, lCount, rCount);
+				writeRes(input);
 				break;
 			}
 		}

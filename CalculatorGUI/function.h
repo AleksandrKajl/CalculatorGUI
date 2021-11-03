@@ -38,7 +38,10 @@ class Calculator
 
 //Метод извлечения данных из массива(lValue и rValue)
 	void dataExtraction(char* input);
+//Метод извлечения квадратного корня из числа
 	void extSQRT(char* input);
+//Запись результата подвырожения в массив
+	void writeRes(char* input);
 //Вычесляет колличество символов числа, до арифмитического знака или после
 	int numbCount(char* input, int i, bool direction);
 public:
