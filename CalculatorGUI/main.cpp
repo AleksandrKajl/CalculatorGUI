@@ -15,6 +15,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 	{
 	case WM_INITDIALOG:
 		inp.hEdit = GetDlgItem(hWnd, IDC_MYEDIT);
+		inp.setBuf('0');
 		break;
 
 	case WM_COMMAND:
@@ -79,7 +80,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			inp.setSign('/');
 			break;
 		case IDC_POINT:
-			if (!inp.checkPoint())
+			if (!inp.checkPoint(inp.idx))
 				inp.setSign(',');
 			break;		   
 		case IDC_SIGN:	   
@@ -95,19 +96,24 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_NULL:
-			inp.idx = 0;
+			inp.input[0] = '0';
+			inp.idx = 1;
 			inp.input[inp.idx] = '\0';
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 			}
 //=============================================================================
-//=====================Кнопки x2, 2Vx===============================================
+//=====================Кнопки x2, 2Vx, mod ===============================================
 		case IDC_EXP:
 			inp.setSign('^');
 			break;
 
 		case IDC_SQRT:
 			inp.doSignVal('V');
+			break;
+
+		case IDC_MOD:
+			inp.setSign('%');
 			break;
 //=============================================================================
 		}

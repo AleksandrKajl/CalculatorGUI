@@ -4,6 +4,13 @@
 //Глобальные переменные
 int _exp{};							//Показывает сколько нулей перед числом//#Разделяет целую и дробную часть вещественного числ
 
+void FloatNumb::clean()
+{
+	whole = 0;
+	decPart = -1;
+	neg = false;
+}
+
 //Методы класса Input
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
@@ -29,7 +36,8 @@ void Input::doSignVal(char sign)
 	//Устанавлеваем на последний символ
 	int i{ idx - 1 };
 	//считаем количество символов до первого арефм. знака или до нулевого индекса буфера
-	while (input[i] != '-' && input[i] != '+' && input[i] != '*' && input[i] != '/' && input[i] != '^' && input[i] != 'V' && i >= 0)
+	while (input[i] != '-' && input[i] != '+' && input[i] != '*' && input[i] != '/' && 
+		input[i] != '^' && input[i] != 'V' && input[i] != '%' && i >= 0)
 	{
 		++count;
 		--i;
@@ -44,7 +52,9 @@ void Input::doSignVal(char sign)
 	}
 
 	//Если стоял унарный знак
-	if (input[i] == sign && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' || i == 0))
+	if (input[i] == sign && (input[i - 1] == '+' || input[i - 1] == '-' ||
+		input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' ||
+		input[i - 1] == '%' || i == 0))
 	{
 		++count;
 	}
@@ -62,7 +72,8 @@ void Input::doSignVal(char sign)
 
 	//Проверяем было ли число отрицательным
 	if (input[idx] == sign && (input[idx - 1] == '+' || input[idx - 1] == '-' ||
-		input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == '^' || idx == 0))
+		input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == '^' ||
+		input[idx - 1] == '%' || idx == 0))
 	{
 		//Если было затираем знак который был
 		for (int i{ 1 }; i < count; ++i, ++idx)
@@ -86,16 +97,20 @@ void Input::doSignVal(char sign)
 void Input::setSign(char sign)
 {
 	//Проверка на два знака подряд
-	if (input[idx - 1] == '+' || input[idx - 1] == '-' || input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == ',' || input[idx - 1] == '^' || idx == 0)
+	if (input[idx - 1] == '+' || input[idx - 1] == '-' || input[idx - 1] == '*' ||
+		input[idx - 1] == '/' || input[idx - 1] == ',' || input[idx - 1] == '^' ||
+		input[idx - 1] == '%' || idx == 0)
 		return;
 	else
 		setBuf(sign);
 }
 
 //#Функция проверяет число на установленную точку(запятую) 
-bool Input::checkPoint()
+bool Input::checkPoint(int idx)
 {
-	while (input[idx - 1] != '-' && input[idx - 1] != '+' && input[idx - 1] != '*' && input[idx - 1] != '/' && input[idx - 1] != '^' && input[idx - 1] != 'V' && (idx - 1) != 0)
+	while (input[idx - 1] != '-' && input[idx - 1] != '+' && input[idx - 1] != '*' && 
+		input[idx - 1] != '/' && input[idx - 1] != '^' && input[idx - 1] != 'V' &&
+		input[idx - 1] != '%' && (idx - 1) != 0)
 	{
 		if (input[idx - 1] == ',')
 			return true;
@@ -109,7 +124,8 @@ bool Input::checkInput()
 {
 	int i{};
 	//Проверка на арифм. знак в начале
-	if (input[i] == '+' || input[i] == '*' || input[i] == '/' || input[i] == ',' || input[i] == '^')
+	if (input[i] == '+' || input[i] == '*' || input[i] == '/' || input[i] == ',' ||
+		input[i] == '^' || input[i] == '%')
 	{
 		return false;
 	}
@@ -132,10 +148,12 @@ bool Input::checkInput()
 
 		//Корректно если: число, арифм. знак или знак дес. дроби 
 		if ((input[i] >= '0' && input[i] <= '9') || input[i] == '+' || input[i] == '-' ||
-			input[i] == '*' || input[i] == '/' || input[i] == ',' || input[i] == '^' || input[i] == 'V')
+			input[i] == '*' || input[i] == '/' || input[i] == ',' || input[i] == '^' ||
+			input[i] == '%' || input[i] == 'V')
 		{
 			// Проверка на два знака подряд
-			if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' || input[i] == '^' || input[i] == 'V')
+			if (input[i] == '+' || input[i] == '-' || input[i] == '*' || input[i] == '/' ||
+				input[i] == '^' || input[i] == 'V' || input[i] == '%')
 			{
 				//Проверяем точку в конце числа и перед числом
 				if (input[i - 1] == ',' || input[i + 1] == ',')
@@ -143,8 +161,9 @@ bool Input::checkInput()
 				//Переменная кол. точек в числе обнуляется когда даходим до знака
 				cnt = 0;
 				//Второй арифм. знак
-				if (input[i + 1] == '+' || (input[i + 1] == '-' && input[i + 2] == '-') || input[i + 1] == '*' ||
-					input[i + 1] == '/' || input[i + 1] == '^' || (input[i + 1] == 'V' && input[i + 2] == 'V'))
+				if (input[i + 1] == '+' || (input[i + 1] == '-' && input[i + 2] == '-') ||
+					input[i + 1] == '*' ||input[i + 1] == '/' || input[i + 1] == '^' || 
+					input[i + 1] == '%' || (input[i + 1] == 'V' && input[i + 2] == 'V'))
 				{
 					return false;
 				}
@@ -163,9 +182,13 @@ bool Input::checkInput()
 	}
 
 	//Проверка на арифм. знак в конце
-	if (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' || input[i - 1] == 'V')
+	if (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' ||
+		input[i - 1] == '/' || input[i - 1] == '^' || input[i - 1] == '%' ||
+		input[i - 1] == 'V')
+	{
 		return false;
-
+	}
+		
 	return true;
 }
 
@@ -259,7 +282,9 @@ void Calculator::copy(char* input, char* buftmp)
 {
 
 	idx -= lCount;
-	if (idx > 0 && input[idx - 1] == '-' && (input[idx - 2] == '+' || input[idx - 2] == '-' || input[idx - 2] == '*' || input[idx - 2] == '/' || (idx - 1) == 0))
+	if (idx > 0 && input[idx - 1] == '-' && (input[idx - 2] == '+' || input[idx - 2] == '-' || 
+		input[idx - 2] == '*' || input[idx - 2] == '/' || input[idx - 2] == '^' || 
+		input[idx - 2] == '%' || (idx - 1) == 0))
 		idx--;
 
 	int j{};
@@ -322,7 +347,8 @@ double Calculator::charToDouble(char* input, int i, int numb)
 	int tmp{ i };
 
 	int isDegree{ 1 };
-	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != ',' && input[i] != '^' && input[i] != 'V')
+	while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' &&
+		i >= 0 && input[i] != ',' && input[i] != '^' && input[i] != 'V' && input[i] != '%')
 	{
 		i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 		isDegree *= 10;
@@ -343,7 +369,8 @@ double Calculator::charToDouble(char* input, int i, int numb)
 
 		isDegree = 1;
 		i_numb = 0;
-		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && i >= 0 && input[i] != '^' && input[i] != 'V')
+		while (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && 
+			i >= 0 && input[i] != '^' && input[i] != 'V' && input[i] != '%')
 		{
 			i_numb += static_cast<int>(input[i] - (int)'0') * isDegree;		//Умнажаем число на степень десяти
 			isDegree *= 10;
@@ -352,14 +379,16 @@ double Calculator::charToDouble(char* input, int i, int numb)
 		f_numb += static_cast<float> (i_numb);
 
 		//Если число отрицательное делаем отрицательным
-		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i-1] == '^' || i == 0))
+		if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' ||
+			input[i - 1] == '/' || input[i-1] == '^' || input[i - 1] == '%' || i == 0))
 			f_numb = -f_numb;
 
 		return f_numb;
 	}
 
 	//Если число отрицательное делаем отрицательным
-	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' || input[i - 1] == '/' || input[i - 1] == '^' || i == 0))
+	if (input[i] == '-' && (input[i - 1] == '+' || input[i - 1] == '-' || input[i - 1] == '*' ||
+		input[i - 1] == '/' || input[i - 1] == '^' || input[i - 1] == '%' || i == 0))
 		i_numb = -i_numb;
 
 	return i_numb;
@@ -373,7 +402,8 @@ int Calculator::numbCount(char* input, int i, bool direction)
 	int cnt{};
 
 	//Если полученный результат выражения отрицательное число
-	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && input[i] != '/' && input[i] != '^' && input[i] != 'V'))
+	if (input[0] == '-' && (input[i] != '+' && input[i] != '-' && input[i] != '*' && 
+		input[i] != '/' && input[i] != '^' && input[i] != '%' && input[i] != 'V'))
 	{
 		++i;
 	}
@@ -381,7 +411,8 @@ int Calculator::numbCount(char* input, int i, bool direction)
 	if (direction != true)
 	{
 		//Считаем количество символов до следующего знака
-		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && input[i - 1] != '/' && input[i - 1] != '^' && i != 0)
+		while (input[i - 1] != '+' && input[i - 1] != '-' && input[i - 1] != '*' && 
+			input[i - 1] != '/' && input[i - 1] != '^' && input[i - 1] != '%' && i != 0)
 		{
 			++cnt;
 			--i;
@@ -407,7 +438,9 @@ int Calculator::numbCount(char* input, int i, bool direction)
 //Иначе
 		else
 		{
-			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && input[i + 1] != '/' && input[i + 1] != '^' && input[i + 1] != '\0')
+			while (input[i + 1] != '+' && input[i + 1] != '-' && input[i + 1] != '*' && 
+				input[i + 1] != '/' && input[i + 1] != '^' && input[i + 1] != '%' && 
+				input[i + 1] != '\0')
 			{
 				++cnt;
 				++i;
@@ -491,7 +524,7 @@ int Calculator::doColculations(char* input)
 
 	while (input[idx] != '\0')
 	{
-		if ((input[idx] == '+' || input[idx] == '-') && input[idx + 1] != 'V')
+		if ((input[idx] == '+' || input[idx] == '-' || input[idx] == '%') && input[idx + 1] != 'V')
 		{
 			switch (input[idx])
 			{
@@ -504,6 +537,25 @@ int Calculator::doColculations(char* input)
 			case('-'):
 				dataExtraction(input);
 				result = lVal - rVal;
+				writeRes(input);
+				break;
+			case('%'):
+				long long whole{};
+				long long decPart{};
+				dataExtraction(input);
+				FloatNumb obj;
+				devideDouble(obj, lVal);
+				whole = obj.whole;
+				if(obj.decPart != -1)
+					decPart = obj.decPart;
+
+				obj.clean();
+				devideDouble(obj, rVal);
+				whole %= obj.whole;
+				if(obj.decPart != -1)
+					decPart %= obj.decPart;
+				result = static_cast<long double>(decPart) / PRECESSION + whole;
+
 				writeRes(input);
 				break;
 			}

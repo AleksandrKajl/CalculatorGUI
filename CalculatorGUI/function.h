@@ -15,6 +15,7 @@ struct FloatNumb
 	bool neg;
 	FloatNumb(int _intPart = 0, int _decPart = -1, bool _neg = false) : whole(_intPart), decPart(_decPart), neg(_neg)
 	{}
+	void clean();
 };
 
 class Input
@@ -32,7 +33,7 @@ public:
 //Метод записывает арифм. знак в буфер ввода
 	void setSign(char sign);
 //Метод проверяет число на установленную точку(запятую) 
-	bool checkPoint();
+	bool checkPoint(int idx);
 //Метод проверки корректного ввода
 	bool checkInput();
 };
