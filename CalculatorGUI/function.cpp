@@ -19,9 +19,11 @@ void Input::setBuf(char symb)
 {
 	//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
 	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)input);
+	if (idx == 1 && input[0] == '0' && (symb != ',' && symb != '+' && symb != '-' && 
+		symb != '*' && symb != '/' && symb != '^' && symb != '%'))
+		idx = 0;
 	input[idx] = symb;
-	++idx;
-	input[idx] = '\0';
+	input[++idx] = '\0';
 	//Отправляет сообщение окну, минуя очередь
 	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input));
 }

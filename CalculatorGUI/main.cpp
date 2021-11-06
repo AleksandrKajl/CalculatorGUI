@@ -58,12 +58,11 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 //=====================Кнопки <--, +, -, /, *, =, ',', +/-, C================== 
 			{
 		case IDC_BACKSPACE:
-			inp.idx--;
-			if (inp.idx < 0)
-			{
-				inp.idx = 0;
-				break;
-			}
+			if(inp.idx > 1)
+				inp.idx--;
+			else
+				inp.input[0] = '0';
+
 			inp.input[inp.idx] = '\0';
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
@@ -96,9 +95,9 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_NULL:
+			inp.idx = 0;
 			inp.input[0] = '0';
-			inp.idx = 1;
-			inp.input[inp.idx] = '\0';
+			inp.input[1] = '\0';
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 			}
