@@ -14,14 +14,15 @@ void FloatNumb::clean()
 //Методы класса Input
 //#Функция вывода символов в окно калькулятора
 //#Параметры: Дескриптор окна управления, устанав. символ, буфер для вывода символов
-//#Return: Количество введёных символов без \0
 void Input::setBuf(char symb)
 {
 	//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)input);
-	if (idx == 1 && input[0] == '0' && (symb != ',' && symb != '+' && symb != '-' && 
+	if (idx == 1 && input[0] == '0' && (symb != ',' && symb != '+' && symb != '-' &&
 		symb != '*' && symb != '/' && symb != '^' && symb != '%'))
+	{
 		idx = 0;
+	}
+
 	input[idx] = symb;
 	input[++idx] = '\0';
 	//Отправляет сообщение окну, минуя очередь
@@ -77,6 +78,7 @@ void Input::doSignVal(char sign)
 		input[idx - 1] == '*' || input[idx - 1] == '/' || input[idx - 1] == '^' ||
 		input[idx - 1] == '%' || idx == 0))
 	{
+		idxSign--;
 		//Если было затираем знак который был
 		for (int i{ 1 }; i < count; ++i, ++idx)
 			input[idx] = tmpBuf[i];
@@ -84,7 +86,7 @@ void Input::doSignVal(char sign)
 	else
 	{
 		//Записываем знак, затем число
-
+		idxSign = idx;				//Сохраняем индекс знака
 		input[idx++] = sign;
 		for (int i{}; i < count; ++i, ++idx)
 			input[idx] = tmpBuf[i];
@@ -102,9 +104,16 @@ void Input::setSign(char sign)
 	if (input[idx - 1] == '+' || input[idx - 1] == '-' || input[idx - 1] == '*' ||
 		input[idx - 1] == '/' || input[idx - 1] == ',' || input[idx - 1] == '^' ||
 		input[idx - 1] == '%' || idx == 0)
+	{
 		return;
+	}
 	else
+	{
+		if(sign != ',')
+			idxSign = idx;
 		setBuf(sign);
+	}
+
 }
 
 //#Функция проверяет число на установленную точку(запятую) 
@@ -259,10 +268,12 @@ void Calculator::intToChar(char* buf, FloatNumb & obj)
 				--obj.decPart;
 			}
 		}
-		else if (obj.whole > 0)
+		else if (obj.whole >= 0)
 		{
 			buf[i] = static_cast<char>(obj.whole % 10 + '0');
 			obj.whole /= 10;
+			if(obj.whole == 0)
+				obj.whole--;
 		}
 		else
 			break;

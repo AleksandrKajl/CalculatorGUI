@@ -50,7 +50,9 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 		case IDC_NINE:	
 			inp.setBuf('9');
 			break;		
-		case IDC_ZERO:	
+		case IDC_ZERO:
+			if (inp.idx > inp.idxSign+1 && inp.input[inp.idxSign + 1] == '0' && inp.input[inp.idxSign + 2] != ',')
+				break;
 			inp.setBuf('0');
 			break;
 			}
@@ -95,7 +97,8 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
 			break;
 		case IDC_NULL:
-			inp.idx = 0;
+			inp.idxSign = 0;
+			inp.idx = 1;
 			inp.input[0] = '0';
 			inp.input[1] = '\0';
 			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
