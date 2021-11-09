@@ -228,7 +228,7 @@ void Calculator::devideDouble(FloatNumb& obj, long double val)
 			++_exp;
 			tmp /= 10;
 		}
-		obj.decPart = static_cast<int>(tmpVal * PRECESSION);
+		obj.decPart = static_cast<long long>(tmpVal * PRECESSION);
 	}
 }
 
@@ -245,15 +245,29 @@ void Calculator::inversArr(char* buf, bool negative, const int SZ)
 		std::swap(buf[i], buf[j]);
 }
 
+bool Calculator::checkNull(char* buf, int i)
+{
+	while (i >= 0)
+	{
+		if (buf[i] != '0')
+			return false;
+		i--;
+	}
+	return true;
+}
+
 void Calculator::intToChar(char* buf, FloatNumb & obj)
 {
 	int i{};
+	bool check{true};
 	while (true)
 	{
 		if (obj.decPart > 0)
 		{
 			buf[i] = static_cast<char>(obj.decPart % 10 + '0');
 			obj.decPart /= 10;
+			if (buf[0] == '0')
+				continue;
 		}
 		else if (obj.decPart == 0)
 		{

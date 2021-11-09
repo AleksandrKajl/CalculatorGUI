@@ -68,6 +68,7 @@ class Calculator
 	void inversArr(char* buf, bool negative, const int SZ);
 //Вставляет в массив вместо подвырожения его результат
 	void copy(char* input, char* buftmp);
+	bool checkNull(char* buf, int i);
 
 public:
 //Основной публичный метод
