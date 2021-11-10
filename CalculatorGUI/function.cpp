@@ -559,19 +559,13 @@ int Calculator::doColculations(char* input)
 				if (obj.decPart != -1)
 					decPart %= obj.decPart;
 				result = static_cast<long double>(decPart) / PRECESSION + whole;
+				if (obj.neg == true)
+					result = -result;
 
 				writeRes(input);
 				break;
 			}
 		}
-		//else if (input[idx + 1] == 'V')
-		//{
-		//	int tmp = idx;
-		//	idx++;
-
-		//	extSQRT(input);
-		//	idx = tmp - 1;
-		//}
 
 		idx++;
 	}
@@ -600,14 +594,6 @@ int Calculator::doColculations(char* input)
 				break;
 			}
 		}
-		//else if (input[idx + 1] == 'V')
-		//{
-		//	int tmp = idx;
-		//	idx++;
-
-		//	extSQRT(input);
-		//	idx = tmp - 1;
-		//}
 
 		idx++;
 	}
