@@ -506,10 +506,28 @@ int Calculator::doColculations(char* input)
 	if (input[0] == 'V')
 		extSQRT(input);
 
+	while (input[idx] != '\0')
+	{
+		if (input[idx] == '^')
+		{
+			dataExtraction(input);
+			result = pow(lVal, rVal);
+			writeRes(input);
+		}
+		else if (input[idx] == 'V')
+		{
+			extSQRT(input);
+		}
+			
+
+		idx++;
+	}
+
+	idx = 0;
 	//processing * and /
 	while (input[idx] != '\0')
 	{
-		if ((input[idx] == '*' || input[idx] == '/' || input[idx] == '^') && input[idx + 1] != 'V')
+		if (input[idx] == '*' || input[idx] == '/' || input[idx] == '%')
 		{
 			switch (input[idx])
 			{
@@ -525,21 +543,35 @@ int Calculator::doColculations(char* input)
 				writeRes(input);
 				break;
 
-			case('^'):
+			case('%'):
+				long long whole {};
+				long long decPart{};
 				dataExtraction(input);
-				result = pow(lVal, rVal);
+				FloatNumb obj;
+				devideDouble(obj, lVal);
+				whole = obj.whole;
+				if (obj.decPart != -1)
+					decPart = obj.decPart;
+
+				obj.clean();
+				devideDouble(obj, rVal);
+				whole %= obj.whole;
+				if (obj.decPart != -1)
+					decPart %= obj.decPart;
+				result = static_cast<long double>(decPart) / PRECESSION + whole;
+
 				writeRes(input);
 				break;
 			}
 		}
-		else if (input[idx + 1] == 'V')
-		{
-			int tmp = idx;
-			idx++;
+		//else if (input[idx + 1] == 'V')
+		//{
+		//	int tmp = idx;
+		//	idx++;
 
-			extSQRT(input);
-			idx = tmp - 1;
-		}
+		//	extSQRT(input);
+		//	idx = tmp - 1;
+		//}
 
 		idx++;
 	}
@@ -551,7 +583,7 @@ int Calculator::doColculations(char* input)
 
 	while (input[idx] != '\0')
 	{
-		if ((input[idx] == '+' || input[idx] == '-' || input[idx] == '%') && input[idx + 1] != 'V')
+		if (input[idx] == '+' || input[idx] == '-')
 		{
 			switch (input[idx])
 			{
@@ -566,35 +598,16 @@ int Calculator::doColculations(char* input)
 				result = lVal - rVal;
 				writeRes(input);
 				break;
-			case('%'):
-				long long whole{};
-				long long decPart{};
-				dataExtraction(input);
-				FloatNumb obj;
-				devideDouble(obj, lVal);
-				whole = obj.whole;
-				if(obj.decPart != -1)
-					decPart = obj.decPart;
-
-				obj.clean();
-				devideDouble(obj, rVal);
-				whole %= obj.whole;
-				if(obj.decPart != -1)
-					decPart %= obj.decPart;
-				result = static_cast<long double>(decPart) / PRECESSION + whole;
-
-				writeRes(input);
-				break;
 			}
 		}
-		else if (input[idx + 1] == 'V')
-		{
-			int tmp = idx;
-			idx++;
+		//else if (input[idx + 1] == 'V')
+		//{
+		//	int tmp = idx;
+		//	idx++;
 
-			extSQRT(input);
-			idx = tmp - 1;
-		}
+		//	extSQRT(input);
+		//	idx = tmp - 1;
+		//}
 
 		idx++;
 	}
