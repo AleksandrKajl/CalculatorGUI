@@ -1,4 +1,5 @@
-#include"function.h"
+#include"calculator.h"
+#include"input.h"
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
@@ -105,7 +106,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 			}
 //=============================================================================
-//=====================Кнопки x2, 2Vx, mod ===============================================
+//=====================Кнопки x2, 2Vx, mod, % ===============================================
 		case IDC_EXP:
 			inp.setSign('^');
 			break;
@@ -116,6 +117,10 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 
 		case IDC_MOD:
 			inp.setSign('%');
+			break;
+
+		case IDC_PER:
+
 			break;
 //=============================================================================
 		}

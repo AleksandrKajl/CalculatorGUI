@@ -29,6 +29,8 @@
 #define IDC_SQRT                        1022
 #define IDC_DIV3                        1023
 #define IDC_MOD                         1023
+#define IDC_                            1024
+#define IDC_PER                         1024
 
 // Next default values for new objects
 // 
