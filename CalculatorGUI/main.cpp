@@ -67,7 +67,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 				inp.input[0] = '0';
 
 			inp.input[inp.idx] = '\0';
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input.c_str()));
 			break;
 		case IDC_PLUS:
 			inp.setSign('+');
@@ -90,19 +90,19 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 		case IDC_EQ:
 			//Отправляет сообщение окну, минуя очередь
-			inp.idx = SendMessage(inp.hEdit, WM_GETTEXT, 256, (LPARAM)inp.input);
+			inp.idx = SendMessage(inp.hEdit, WM_GETTEXT, 256, (LPARAM)inp.input.c_str());
 			if (inp.checkInput())
 				inp.idx = calc.doColculations(inp.input);
 			else
-				strcpy(inp.input,"Invalid input");
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
+				inp.input="Invalid input";
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input.c_str()));
 			break;
 		case IDC_NULL:
 			inp.idxSign = 0;
 			inp.idx = 1;
 			inp.input[0] = '0';
 			inp.input[1] = '\0';
-			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input));
+			SendMessage(inp.hEdit, WM_SETTEXT, 0, LPARAM(inp.input.c_str()));
 			break;
 			}
 //=============================================================================

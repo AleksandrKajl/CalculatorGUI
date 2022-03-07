@@ -39,7 +39,7 @@ void Calculator::devideDouble(FloatNumb& obj, long double val)
 	}
 }
 
-void Calculator::inversArr(char* buf, bool negative, const int SZ)
+void Calculator::inversArr(std::string& buf, bool negative, const int SZ)
 {
 	int i{};
 	if (negative == true)
@@ -52,7 +52,7 @@ void Calculator::inversArr(char* buf, bool negative, const int SZ)
 		std::swap(buf[i], buf[j]);
 }
 
-bool Calculator::checkNull(char* buf, int i)
+bool Calculator::checkNull(std::string& buf, int i)
 {
 	while (i >= 0)
 	{
@@ -63,7 +63,7 @@ bool Calculator::checkNull(char* buf, int i)
 	return true;
 }
 
-void Calculator::intToChar(char* buf, FloatNumb & obj)
+void Calculator::intToChar(std::string& buf, FloatNumb & obj)
 {
 	int i{};
 	bool check{true};
@@ -105,14 +105,14 @@ void Calculator::intToChar(char* buf, FloatNumb & obj)
 
 }
 
-void Calculator::DoubleToChar(char* buf)
+void Calculator::DoubleToChar(std::string& buf)
 {
 	FloatNumb obj;
 	devideDouble(obj, result);
 	intToChar(buf, obj);
 }
 
-void Calculator::copy(char* input, char* buftmp)
+void Calculator::copy(std::string& input, std::string& buftmp)
 {
 
 	idx -= lCount;
@@ -133,9 +133,9 @@ void Calculator::copy(char* input, char* buftmp)
 //#Запись результата подвырожения в массив
 //#Принимает: Массив с данными, размер массива, текущая поз. в массиве, результат вырожения,
 //кол. символов лев. числа от ар. знака, кол. символов правого числа#
-void Calculator::writeRes(char* input)
+void Calculator::writeRes(std::string& input)
 {
-	char buf[256]{};
+	std::string buf;
 	if (input[idx + (rCount + 1)] == '\0')
 	{
 		DoubleToChar(buf);
@@ -174,7 +174,7 @@ void Calculator::writeRes(char* input)
 
 //#Переводит символы в числа#
 //#Принимает: массив данных, текущий указатель на последний символ пер. числа, кол. символов в переводимом числе# 
-double Calculator::charToDouble(char* input, int i, int numb)
+double Calculator::charToDouble(std::string& input, int i, int numb)
 {
 	int i_numb{};
 	double f_numb{};
@@ -231,7 +231,7 @@ double Calculator::charToDouble(char* input, int i, int numb)
 //#Вычесляет колличество символов числа, до арифмитического знака или после#
 //#Принимает: массив с данными, текущая позиция в массиве, флаг направления  true - 
 //в право(число находящаяся с право от ар. знака), false - влево.#
-int Calculator::numbCount(char* input, int i, bool direction)
+int Calculator::numbCount(std::string& input, int i, bool direction)
 {
 	int cnt{};
 
@@ -286,7 +286,7 @@ int Calculator::numbCount(char* input, int i, bool direction)
 
 //#Метод извлечения данных из массива(lValue и rValue)#
 //#Принимает массив данных#
-void Calculator::dataExtraction(char* input)
+void Calculator::dataExtraction(std::string& input)
 {
 	//Считаем количество символов слево и справо от знака
 	lCount = numbCount(input, idx, false);
@@ -297,7 +297,7 @@ void Calculator::dataExtraction(char* input)
 
 //#Метод извлечения квадратного корня из числа#
 //#Принимает массив данных#
-void Calculator::extSQRT(char* input)
+void Calculator::extSQRT(std::string& input)
 {
 	lCount = 0;		//Нужно для корректной записи в массив функцией copy 
 	rCount = numbCount(input, idx, true);
@@ -308,7 +308,7 @@ void Calculator::extSQRT(char* input)
 }
 //#Вычесления значений вырожения# 
 //#Принимает: массив преобразованных данных в символы, размер массива#
-int Calculator::doColculations(char* input)
+int Calculator::doColculations(std::string& input)
 {
 	if (input[0] == 'V')
 		extSQRT(input);

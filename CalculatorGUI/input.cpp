@@ -12,10 +12,10 @@ void Input::setBuf(char symb)
 		idx = 0;
 	}
 
-	input[idx] = symb;
-	input[++idx] = '\0';
+	input.push_back(symb);
+	input.push_back('\0');
 	//Отправляет сообщение окну, минуя очередь
-	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input));
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input.c_str()));
 }
 
 //#Функция устанавлевает унарный знак +/- или sqrt
@@ -24,7 +24,7 @@ void Input::doSignVal(char sign)
 {
 	int count{};
 	//Получаем символы из окна калькулятора в idx колиество считанных символов без \0
-	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)input);
+	idx = SendMessage(hEdit, WM_GETTEXT, 256, (LPARAM)input.c_str());
 	//Устанавлеваем на последний символ
 	int i{ idx - 1 };
 	//считаем количество символов до первого арефм. знака или до нулевого индекса буфера
@@ -83,7 +83,7 @@ void Input::doSignVal(char sign)
 
 	input[idx] = '\0';
 	//Отправляет сообщение окну, минуя очередь
-	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input));
+	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input.c_str()));
 }
 
 //#Функция записи арифм. знаков в буфер

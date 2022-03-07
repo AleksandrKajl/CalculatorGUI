@@ -2,6 +2,7 @@
 #include<windows.h>
 #include<algorithm>
 #include<cmath>
+#include<string>
 #include"resource.h"
 
 //Константы
@@ -29,30 +30,30 @@ class Calculator
 	int idx;
 
 //Метод извлечения данных из массива(lValue и rValue)
-	void dataExtraction(char* input);
+	void dataExtraction(std::string& input);
 //Метод извлечения квадратного корня из числа
-	void extSQRT(char* input);
+	void extSQRT(std::string& input);
 //Запись результата подвырожения в массив
-	void writeRes(char* input);
+	void writeRes(std::string& input);
 //Вычесляет колличество символов числа, до арифмитического знака или после
-	int numbCount(char* input, int i, bool direction);
+	int numbCount(std::string& input, int i, bool direction);
 //Переводит символы в вещественное число
-	double charToDouble(char* input, int i, int numb);
+	double charToDouble(std::string& input, int i, int numb);
 //Переводит веществинные числа в char
-	void DoubleToChar(char* buf);
+	void DoubleToChar(std::string& buf);
 //Разделяет вещественное число на целую и дробную часть
 	void devideDouble(FloatNumb& obj, long double val);
 //Метод перевода int в char
-	void intToChar(char* buf, FloatNumb& obj);
+	void intToChar(std::string& buf, FloatNumb& obj);
 //Вспомогательный метод который переворачивает массив(Первый символ становится последним)
-	void inversArr(char* buf, bool negative, const int SZ);
+	void inversArr(std::string& buf, bool negative, const int SZ);
 //Вставляет в массив вместо подвырожения его результат
-	void copy(char* input, char* buftmp);
-	bool checkNull(char* buf, int i);
+	void copy(std::string& input, std::string& buftmp);
+	bool checkNull(std::string& buf, int i);
 
 public:
 //Основной публичный метод
-	int doColculations(char* input);
+	int doColculations(std::string& input);
  };
 
 //Прототипы

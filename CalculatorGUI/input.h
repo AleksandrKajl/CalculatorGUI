@@ -1,16 +1,17 @@
 #pragma once
 #include<windows.h>
+#include<string>
 
 class Input
 
 {
 public:
 	HWND hEdit;			//Дескриптор окна редактир.
-	char input[256];	//Буфер ввода
+	std::string input;	//Буфер ввода
 	int idx;			//Показывает на конец строки, количество символов и текущую позицию
 	int idxSign;
 
-	//Методы
+	Input() : hEdit(0), input(""), idx(0), idxSign() { input.reserve(256); }
 	//Заносим символ в буфер ввода
 	void setBuf(char symb);
 	//Метод устанавливает унарный знак +/- или sqrt
