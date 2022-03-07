@@ -12,8 +12,8 @@ void Input::setBuf(char symb)
 		idx = 0;
 	}
 
-	input.push_back(symb);
-	input.push_back('\0');
+	input[idx] = symb;
+	input[++idx] = '\0';
 	//ќтправл€ет сообщение окну, мину€ очередь
 	SendMessage(hEdit, WM_SETTEXT, 0, LPARAM(input.c_str()));
 }

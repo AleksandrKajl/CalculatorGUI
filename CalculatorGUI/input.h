@@ -11,7 +11,7 @@ public:
 	int idx;			//Показывает на конец строки, количество символов и текущую позицию
 	int idxSign;
 
-	Input() : hEdit(0), input(""), idx(0), idxSign() { input.reserve(256); }
+	Input() : hEdit(0), input(std::string(256,'\0')), idx(0), idxSign() {}
 	//Заносим символ в буфер ввода
 	void setBuf(char symb);
 	//Метод устанавливает унарный знак +/- или sqrt
