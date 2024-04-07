@@ -1,9 +1,10 @@
 #include"calculator.h"
 #include"input.h"
 
+
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, int nCmdShow)
 {
-	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_MYDIALOG), 0, (DlgProc), 0);
+	DialogBoxParam(hInstance, MAKEINTRESOURCE(IDD_MYDIALOG), 0, (DLGPROC)(DlgProc), 0);
 
 	return 0;
 }
