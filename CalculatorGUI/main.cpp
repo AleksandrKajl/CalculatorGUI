@@ -113,6 +113,7 @@ BOOL CALLBACK DlgProc(HWND hWnd, UINT uMsg,WPARAM wParam, LPARAM lParam)
 			break;
 
 		case IDC_SQRT:
+			//!Исправить баг с отоброжением 
 			input.doSignVal('V');
 			break;
 
